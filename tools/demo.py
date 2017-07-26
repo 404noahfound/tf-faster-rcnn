@@ -26,6 +26,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os, cv2
 import argparse
+import pickle
 
 from nets.vgg16 import vgg16
 from nets.resnet_v1 import resnetv1
@@ -48,7 +49,6 @@ def vis_rois(im, rois=None, limit=None):
     if limit is None:
         limit = rois.shape[0]
     if rois is not None:
-        print('rois provided')
         for roi in rois[:limit]:
             bbox = roi[:4]
             ax.add_patch(
@@ -92,6 +92,16 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     plt.tight_layout()
     plt.draw()
 
+def save_to_pkl(scores, boxes, rois):
+    file_path = 'test.ignore/'
+    if not os.path.exists(file_path):
+        os.makedirs(directory)
+    data = {'scores': scores, 'boxes': boxes, 'rois': rois}
+    with open(file_path + 'data.pkl', 'w') as f:
+        pickle.dump(data, f)
+    
+
+
 def demo(sess, net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
 
@@ -103,6 +113,7 @@ def demo(sess, net, image_name):
     timer = Timer()
     timer.tic()
     scores, boxes, rois = im_detect(sess, net, im)
+    save_to_pkl(scores, boxes, rois)
     timer.toc()
     print('Detection took {:.3f}s for {:d} object proposals'.format(timer.total_time, boxes.shape[0]))
     print('boxes size: {}'.format(rois.shape))
