@@ -45,7 +45,7 @@ def vis_rois(rois=None, limit=None):
         limit = rois.shape[0]
     if rois is not None:
         print('rois provided')
-        for roi in rois[limit]:
+        for roi in rois[:limit]:
             bbox = roi[:4]
             ax.add_patch(
                 plt.Rectangle((bbox[0], bbox[1]),
