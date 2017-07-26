@@ -40,11 +40,11 @@ CLASSES = ('__background__',
 NETS = {'vgg16': ('vgg16_faster_rcnn_iter_70000.ckpt',),'res101': ('res101_faster_rcnn_iter_110000.ckpt',)}
 DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',)}
 
-def vis_rois(rois=None, limit=None):
+def vis_rois(im, rois=None, limit=None):
     im = im[:, :, (2, 1, 0)]
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.imshow(im, aspect='equal')
-    
+
     if limit is None:
         limit = rois.shape[0]
     if rois is not None:
@@ -57,7 +57,8 @@ def vis_rois(rois=None, limit=None):
                               bbox[3] - bbox[1], fill=False,
                               edgecolor='blue', linewidth=1.0, alpha=0.7)
                 )
-
+    plt.tight_layout()
+    plt.draw()
 
 def vis_detections(im, class_name, dets, thresh=0.5):
     """Draw detected bounding boxes."""
@@ -108,6 +109,8 @@ def demo(sess, net, image_name):
     # Visualize detections for each class
     CONF_THRESH = 0.8
     NMS_THRESH = 0.3
+    vis_rois(im, rois)
+    plt.savefig('./data/demo/output/{}_{}'.format('rois', image_name))
     for cls_ind, cls in enumerate(CLASSES[1:]):
         cls_ind += 1 # because we skipped background
         cls_boxes = boxes[:, 4*cls_ind:4*(cls_ind + 1)]
@@ -116,8 +119,8 @@ def demo(sess, net, image_name):
                           cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
-        vis_rois(rois)
         vis_detections(im, cls, dets, thresh=CONF_THRESH)
+        plt.savefig('./data/demo/output/{}_{}'.format(cls, image_name))
 
 def parse_args():
     """Parse input arguments."""
@@ -171,4 +174,3 @@ if __name__ == '__main__':
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         print('Demo for data/demo/{}'.format(im_name))
         demo(sess, net, im_name)
-        plt.savefig('./data/demo/output/o' + im_name)
