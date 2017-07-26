@@ -92,14 +92,15 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     plt.tight_layout()
     plt.draw()
 
-def save_to_pkl(scores, boxes, rois):
+def save_to_pkl(image_name, scores, boxes, rois):
     file_path = 'test.ignore/'
+    image_name = os.path.splitext(image_name)[0]
     if not os.path.exists(file_path):
         os.makedirs(directory)
     data = {'scores': scores, 'boxes': boxes, 'rois': rois}
-    with open(file_path + 'data.pkl', 'w') as f:
+    with open(file_path + image_name + '_data.pkl', 'w') as f:
         pickle.dump(data, f)
-    
+
 
 
 def demo(sess, net, image_name):
@@ -113,7 +114,7 @@ def demo(sess, net, image_name):
     timer = Timer()
     timer.tic()
     scores, boxes, rois = im_detect(sess, net, im)
-    save_to_pkl(scores, boxes, rois)
+    save_to_pkl(image_name, scores, boxes, rois)
     timer.toc()
     print('Detection took {:.3f}s for {:d} object proposals'.format(timer.total_time, boxes.shape[0]))
     print('boxes size: {}'.format(rois.shape))
