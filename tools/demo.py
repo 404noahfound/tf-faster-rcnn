@@ -96,7 +96,7 @@ def save_to_pkl(image_name, scores, boxes, rois):
     file_path = 'test.ignore/'
     image_name = os.path.splitext(image_name)[0]
     if not os.path.exists(file_path):
-        os.makedirs(directory)
+        os.makedirs(file_path)
     data = {'scores': scores, 'boxes': boxes, 'rois': rois}
     with open(file_path + image_name + '_data.pkl', 'w') as f:
         pickle.dump(data, f)
