@@ -40,7 +40,7 @@ CLASSES = ('__background__',
 NETS = {'vgg16': ('vgg16_faster_rcnn_iter_70000.ckpt',),'res101': ('res101_faster_rcnn_iter_110000.ckpt',)}
 DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',)}
 
-def vis_detections(im, class_name, dets, thresh=0.5, proposals = None):
+def vis_detections(im, class_name, dets, thresh=0.5, proposals=None):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
@@ -65,13 +65,14 @@ def vis_detections(im, class_name, dets, thresh=0.5, proposals = None):
                 fontsize=14, color='white')
 
     if proposals:
+        print('rois provided')
         for proposal in proposals:
             bbox = proposal[:4]
             ax.add_patch(
                 plt.Rectangle((bbox[0], bbox[1]),
                               bbox[2] - bbox[0],
                               bbox[3] - bbox[1], fill=False,
-                              edgecolor='blue', linewidth=1.0)
+                              edgecolor='blue', linewidth=1.0, alpha=0.5)
                 )
 
     ax.set_title(('{} detections with '
