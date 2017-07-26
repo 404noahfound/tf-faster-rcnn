@@ -64,7 +64,7 @@ def vis_detections(im, class_name, dets, thresh=0.5, proposals=None):
                 bbox=dict(facecolor='blue', alpha=0.5),
                 fontsize=14, color='white')
 
-    if proposals:
+    if proposals is not None:
         print('rois provided')
         for proposal in proposals:
             bbox = proposal[:4]
