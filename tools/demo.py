@@ -92,10 +92,10 @@ def demo(sess, net, image_name):
     # Detect all object classes and regress object bounds
     timer = Timer()
     timer.tic()
-    scores, boxes = im_detect(sess, net, im)
+    scores, boxes, rois = im_detect(sess, net, im)
     timer.toc()
     print('Detection took {:.3f}s for {:d} object proposals'.format(timer.total_time, boxes.shape[0]))
-    print('boxes size: {}'.format(boxes.shape))
+    print('boxes size: {}'.format(rois.shape))
     # Visualize detections for each class
     CONF_THRESH = 0.8
     NMS_THRESH = 0.3

@@ -92,7 +92,7 @@ def im_detect(sess, net, im):
   blobs['im_info'] = np.array([[im_blob.shape[1], im_blob.shape[2], im_scales[0]]], dtype=np.float32)
 
   _, scores, bbox_pred, rois = net.test_image(sess, blobs['data'], blobs['im_info'])
-  
+
   boxes = rois[:, 1:5] / im_scales[0]
   scores = np.reshape(scores, [scores.shape[0], -1])
   bbox_pred = np.reshape(bbox_pred, [bbox_pred.shape[0], -1])
@@ -105,7 +105,7 @@ def im_detect(sess, net, im):
     # Simply repeat the boxes, once for each class
     pred_boxes = np.tile(boxes, (1, scores.shape[1]))
 
-  return scores, pred_boxes
+  return scores, pred_boxes, boxes
 
 def apply_nms(all_boxes, thresh):
   """Apply non-maximum suppression to all predicted boxes output by the
@@ -191,4 +191,3 @@ def test_net(sess, net, imdb, weights_filename, max_per_image=100, thresh=0.05):
 
   print('Evaluating detections')
   imdb.evaluate_detections(all_boxes, output_dir)
-
