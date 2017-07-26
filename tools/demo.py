@@ -151,5 +151,4 @@ if __name__ == '__main__':
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         print('Demo for data/demo/{}'.format(im_name))
         demo(sess, net, im_name)
-
-    plt.show()
+        plt.savefig('./data/demo/output/o' + im_name)
