@@ -40,7 +40,22 @@ CLASSES = ('__background__',
 NETS = {'vgg16': ('vgg16_faster_rcnn_iter_70000.ckpt',),'res101': ('res101_faster_rcnn_iter_110000.ckpt',)}
 DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',)}
 
-def vis_detections(im, class_name, dets, thresh=0.5, proposals=None):
+def vis_rois(rois=None, limit=None):
+    if limit is None:
+        limit = rois.shape[0]
+    if rois is not None:
+        print('rois provided')
+        for roi in rois[limit]:
+            bbox = roi[:4]
+            ax.add_patch(
+                plt.Rectangle((bbox[0], bbox[1]),
+                              bbox[2] - bbox[0],
+                              bbox[3] - bbox[1], fill=False,
+                              edgecolor='blue', linewidth=1.0, alpha=0.7)
+                )
+
+
+def vis_detections(im, class_name, dets, thresh=0.5):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
@@ -63,17 +78,6 @@ def vis_detections(im, class_name, dets, thresh=0.5, proposals=None):
                 '{:s} {:.3f}'.format(class_name, score),
                 bbox=dict(facecolor='blue', alpha=0.5),
                 fontsize=14, color='white')
-
-    if proposals is not None:
-        print('rois provided')
-        for proposal in proposals:
-            bbox = proposal[:4]
-            ax.add_patch(
-                plt.Rectangle((bbox[0], bbox[1]),
-                              bbox[2] - bbox[0],
-                              bbox[3] - bbox[1], fill=False,
-                              edgecolor='blue', linewidth=1.0, alpha=0.5)
-                )
 
     ax.set_title(('{} detections with '
                   'p({} | box) >= {:.1f}').format(class_name, class_name,
@@ -108,7 +112,8 @@ def demo(sess, net, image_name):
                           cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
-        vis_detections(im, cls, dets, thresh=CONF_THRESH, proposals=rois)
+        vis_rois(rois)
+        vis_detections(im, cls, dets, thresh=CONF_THRESH)
 
 def parse_args():
     """Parse input arguments."""
