@@ -41,6 +41,10 @@ NETS = {'vgg16': ('vgg16_faster_rcnn_iter_70000.ckpt',),'res101': ('res101_faste
 DATASETS= {'pascal_voc': ('voc_2007_trainval',),'pascal_voc_0712': ('voc_2007_trainval+voc_2012_trainval',)}
 
 def vis_rois(rois=None, limit=None):
+    im = im[:, :, (2, 1, 0)]
+    fig, ax = plt.subplots(figsize=(12, 12))
+    ax.imshow(im, aspect='equal')
+    
     if limit is None:
         limit = rois.shape[0]
     if rois is not None:
