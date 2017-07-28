@@ -121,7 +121,6 @@ def demo(sess, net, image_name):
     # Visualize detections for each class
     CONF_THRESH = 0.8
     NMS_THRESH = 0.3
-    vis_rois(im, rois)
     plt.savefig('./data/demo/output/{}_{}'.format('rois', image_name))
     for cls_ind, cls in enumerate(CLASSES[1:]):
         cls_ind += 1 # because we skipped background
@@ -132,7 +131,6 @@ def demo(sess, net, image_name):
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
         vis_detections(im, cls, dets, thresh=CONF_THRESH)
-        plt.savefig('./data/demo/output/{}_{}'.format(cls, image_name))
 
 def parse_args():
     """Parse input arguments."""
@@ -180,9 +178,11 @@ if __name__ == '__main__':
 
     print('Loaded network {:s}'.format(tfmodel))
 
-    im_names = ['000456.jpg', '000542.jpg', '001150.jpg',
-                '001763.jpg', '004545.jpg']
+    # im_names = ['000456.jpg', '000542.jpg', '001150.jpg',
+    #             '001763.jpg', '004545.jpg']
+    im_names = ['000542.jpg']
     for im_name in im_names:
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         print('Demo for data/demo/{}'.format(im_name))
         demo(sess, net, im_name)
+    plt.show()
