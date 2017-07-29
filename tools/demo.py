@@ -96,10 +96,19 @@ def vis_detections(im, class_name, dets, thresh=0.5, image_name):
     plt.draw()
     plt.savefig('./data/demo/output/{}_{}.jpg'.format(cut_ext(image_name)， class_name))
 
-def vis_rois（im, image_name):
+def vis_rois（im, rois, image_name):
     im = im[:, :, (2, 1, 0)]
     fig, ax = plt.subplots(figsize=(12, 12))
     ax.imshow(im, aspect='equal')
+
+    for roi in rois:
+        bbox = roi
+        ax.add_patch(
+            plt.Rectangle((bbox[0], bbox[1]),
+                          bbox[2] - bbox[0],
+                          bbox[3] - bbox[1], fill=False,
+                          edgecolor='blue', linewidth=0.1, alpha=0.5)
+            )
     plt.axis('off')
     plt.tight_layout()
     plt.draw()
