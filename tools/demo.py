@@ -60,7 +60,10 @@ def vis_rois(im, rois=None, limit=None):
     plt.tight_layout()
     plt.draw()
 
-def vis_detections(im, class_name, dets, thresh=0.5):
+def cut_ext(file_name):
+    return os.path.splitext(file_name)[0]
+
+def vis_detections(im, class_name, dets, thresh=0.5, image_name):
     """Draw detected bounding boxes."""
     inds = np.where(dets[:, -1] >= thresh)[0]
     if len(inds) == 0:
@@ -91,6 +94,16 @@ def vis_detections(im, class_name, dets, thresh=0.5):
     plt.axis('off')
     plt.tight_layout()
     plt.draw()
+    plt.savefig('./data/demo/output/{}_{}.jpg'.format(cut_ext(image_name)， class_name))
+
+def vis_rois（im, image_name):
+    im = im[:, :, (2, 1, 0)]
+    fig, ax = plt.subplots(figsize=(12, 12))
+    ax.imshow(im, aspect='equal')
+    plt.axis('off')
+    plt.tight_layout()
+    plt.draw()
+    plt.savefig('./data/demo/output/{}_{}.jpg'.format(cut_ext(image_name)， 'rois'))
 
 def save_to_pkl(image_name, scores, boxes, rois):
     file_path = 'test.ignore/'
@@ -121,7 +134,7 @@ def demo(sess, net, image_name):
     # Visualize detections for each class
     CONF_THRESH = 0.8
     NMS_THRESH = 0.3
-    plt.savefig('./data/demo/output/{}_{}'.format('rois', image_name))
+    vis_rois()
     for cls_ind, cls in enumerate(CLASSES[1:]):
         cls_ind += 1 # because we skipped background
         cls_boxes = boxes[:, 4*cls_ind:4*(cls_ind + 1)]
@@ -130,7 +143,7 @@ def demo(sess, net, image_name):
                           cls_scores[:, np.newaxis])).astype(np.float32)
         keep = nms(dets, NMS_THRESH)
         dets = dets[keep, :]
-        vis_detections(im, cls, dets, thresh=CONF_THRESH)
+        vis_detections(im, cls, dets, thresh=CONF_THRESH, image_name)
 
 def parse_args():
     """Parse input arguments."""
@@ -185,4 +198,3 @@ if __name__ == '__main__':
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
         print('Demo for data/demo/{}'.format(im_name))
         demo(sess, net, im_name)
-    plt.show()
