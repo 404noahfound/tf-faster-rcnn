@@ -108,23 +108,12 @@ def vis_rois(im, rois, image_name):
             plt.Rectangle((bbox[0], bbox[1]),
                           bbox[2] - bbox[0],
                           bbox[3] - bbox[1], fill=False,
-                          edgecolor='blue', linewidth=0.3, alpha=0.5)
+                          edgecolor='blue', linewidth=0.3, alpha=0.5, color=c=numpy.random.rand(3,1))
             )
     plt.axis('off')
     plt.tight_layout()
     plt.draw()
     plt.savefig('./data/demo/output/{}_{}.jpg'.format(cut_ext(image_name), 'rois'))
-
-def save_to_pkl(image_name, scores, boxes, rois):
-    file_path = 'test.ignore/'
-    image_name = os.path.splitext(image_name)[0]
-    if not os.path.exists(file_path):
-        os.makedirs(file_path)
-    data = {'scores': scores, 'boxes': boxes, 'rois': rois}
-    with open(file_path + image_name + '_data.pkl', 'wb') as f:
-        pickle.dump(data, f)
-
-
 
 def demo(sess, net, image_name):
     """Detect object classes in an image using pre-computed object proposals."""
@@ -137,10 +126,8 @@ def demo(sess, net, image_name):
     timer = Timer()
     timer.tic()
     scores, boxes, rois = im_detect(sess, net, im)
-    save_to_pkl(image_name, scores, boxes, rois)
     timer.toc()
     print('Detection took {:.3f}s for {:d} object proposals'.format(timer.total_time, boxes.shape[0]))
-    print('boxes size: {}'.format(rois.shape))
     # Visualize detections for each class
     CONF_THRESH = 0.8
     NMS_THRESH = 0.3
