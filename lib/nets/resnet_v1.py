@@ -146,7 +146,7 @@ class resnetv1(Network):
 
   def build_rpn(self, initializer):
     is_training = self._is_training
-    net_conv = self.self._layers['head']
+    net_conv = self._layers['head']
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
       # build the anchors for the image
       self._anchor_component()

@@ -19,6 +19,10 @@ from nets.mobilenet_v1 import mobilenetv1
 
 def test_build_network():
     assert 1==1
+    test_build_resnet()
+
+def test_build_resnet():
+    net = resnetv1(batch_size=cfg.TRAIN.IMS_PER_BATCH, num_layers=50)
 
 if __name__ == '__main__':
     test_build_network()
