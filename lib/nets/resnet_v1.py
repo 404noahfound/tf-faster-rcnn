@@ -201,6 +201,7 @@ class resnetv1(Network):
     is_training = self._is_training
     net_conv = self._layers['head']
     blocks = self._resnet_blocks
+    rois = self._predictions["rois"]
 
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
       # rcnn
