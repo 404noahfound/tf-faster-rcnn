@@ -199,7 +199,7 @@ class resnetv1(Network):
 
   def build_rcnn(self, initializer, initializer_bbox):
     is_training = self._is_training
-    net_conv = self.self._layers['head']
+    net_conv = self._layers['head']
     blocks = self._resnet_blocks
 
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
