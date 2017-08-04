@@ -3,6 +3,7 @@
 # Licensed under The MIT License [see LICENSE for details]
 # Written by Xinlei Chen
 # --------------------------------------------------------
+# TODO: replace the layers with import
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -57,7 +58,7 @@ class Network(object):
     assert image.get_shape()[0] == 1
     boxes = tf.expand_dims(boxes, dim=0)
     image = tf.image.draw_bounding_boxes(image, boxes)
-    
+
     return tf.summary.image('ground_truth', image)
 
   def _add_act_summary(self, tensor):
@@ -299,10 +300,10 @@ class Network(object):
 
     # list as many types of layers as possible, even if they are not used now
     with arg_scope([slim.conv2d, slim.conv2d_in_plane, \
-                    slim.conv2d_transpose, slim.separable_conv2d, slim.fully_connected], 
+                    slim.conv2d_transpose, slim.separable_conv2d, slim.fully_connected],
                     weights_regularizer=weights_regularizer,
-                    biases_regularizer=biases_regularizer, 
-                    biases_initializer=tf.constant_initializer(0.0)): 
+                    biases_regularizer=biases_regularizer,
+                    biases_initializer=tf.constant_initializer(0.0)):
       rois, cls_prob, bbox_pred = self.build_network(sess, training)
 
     layers_to_output = {'rois': rois}
@@ -399,4 +400,3 @@ class Network(object):
     feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],
                  self._gt_boxes: blobs['gt_boxes']}
     sess.run([train_op], feed_dict=feed_dict)
-
