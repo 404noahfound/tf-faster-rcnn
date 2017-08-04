@@ -18,6 +18,7 @@ import numpy as np
 
 from nets.network import Network
 from model.config import cfg
+from nets.rpn_fpn import RPN_FPN
 
 def resnet_arg_scope(is_training=True,
                      weight_decay=cfg.TRAIN.WEIGHT_DECAY,
@@ -145,6 +146,10 @@ class resnetv1(Network):
     return initializer, initializer_bbox
 
   def build_rpn(self, initializer):
+    if cfg.USE_RPN_FPN:
+      fpn = RPN_FPN(self)
+      outputs = fpn.build_net()
+      return outputs['rois']
     is_training = self._is_training
     net_conv = self._layers['head']
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
