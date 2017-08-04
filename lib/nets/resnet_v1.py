@@ -254,6 +254,9 @@ class resnetv1(Network):
     # Now the base is always fixed during training
 
     self._layers['head'] = self.build_resnet()
+    # testing for all variable names
+    # remember to delete this
+    print([n.name for n in tf.get_default_graph().as_graph_def().node])
     rois,cls_prob,bbox_pred = self.build_faster_rcnn_component()
 
     return rois, cls_prob, bbox_pred
