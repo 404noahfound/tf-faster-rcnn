@@ -12,8 +12,7 @@ TRAIN:
   WEIGHT_DECAY: 0.0001
   DOUBLE_BIAS: False
   SNAPSHOT_PREFIX: res50_faster_rcnn
-  USE_RPN_FPN: True
 TEST:
   HAS_RPN: True
-  USE_RPN_FPN: True
 POOLING_MODE: crop
+USE_RPN_FPN: True
