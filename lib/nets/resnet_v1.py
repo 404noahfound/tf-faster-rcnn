@@ -120,21 +120,21 @@ class resnetv1(Network):
       net_conv = self.build_base()
     if cfg.RESNET.FIXED_BLOCKS > 0:
       with slim.arg_scope(resnet_arg_scope(is_training=False)):
-        net_conv, _ = resnet_v1.resnet_v1(net_conv,
+        net_conv, end_points = resnet_v1.resnet_v1(net_conv,
                                      blocks[0:cfg.RESNET.FIXED_BLOCKS],
                                      global_pool=False,
                                      include_root_block=False,
                                      scope=self._resnet_scope)
     if cfg.RESNET.FIXED_BLOCKS < 3:
       with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
-        net_conv, _ = resnet_v1.resnet_v1(net_conv,
+        net_conv, end_points = resnet_v1.resnet_v1(net_conv,
                                            blocks[cfg.RESNET.FIXED_BLOCKS:-1],
                                            global_pool=False,
                                            include_root_block=False,
                                            scope=self._resnet_scope)
 
     self._act_summaries.append(net_conv)
-    return net_conv
+    return net_conv, end_points
 
   def set_initializers(self):
     if cfg.TRAIN.TRUNCATED:
@@ -246,6 +246,8 @@ class resnetv1(Network):
     self._score_summaries.update(self._predictions)
     return rois, cls_prob, bbox_pred
 
+  def get_layer(layer_name):
+    return self._layers['end_points'][layer_name]
 
   def build_network(self, sess, is_training=True):
 
@@ -253,11 +255,12 @@ class resnetv1(Network):
     assert (0 <= cfg.RESNET.FIXED_BLOCKS <= 3)
     # Now the base is always fixed during training
 
-    self._layers['head'] = self.build_resnet()
+    self._layers['head'], self._layers['end_points'] = self.build_resnet()
+
+    # TODO: Warning! delete this line of test code immediately after test
+    print(self._layers['end_points'])
     # testing for all variable names
     # remember to delete this
-    for n in tf.get_default_graph().as_graph_def().node:
-      print(n.name)
     rois,cls_prob,bbox_pred = self.build_faster_rcnn_component()
 
     return rois, cls_prob, bbox_pred

@@ -43,10 +43,9 @@ class FeaturePyramidNetwork():
 
   def _load_input_layers(self):
     input_layers = {}
-    with tf.variable_scope(self._base_net_scope, reuse=True):
-      for key in self._net_map:
-        input_layers[key] = tf.get_variable(self._net_map[key])
-      self._input_layers = input_layers
+    for key in self._net_map:
+      input_layers[key] = self._base_net.get_layer(key)
+    self._input_layers = input_layers
 
 
   def build_pyramid(self):
