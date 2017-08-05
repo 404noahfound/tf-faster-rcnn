@@ -86,7 +86,7 @@ class FeaturePyramidNetwork():
         with tf.variable_scope(layer_key):
           head, output = head_builder(layer)
           self._heads[layer_key] = head
-          self._statge_outputs[layer_key] = output
+          self._stage_outputs[layer_key] = output
 
   def set_initializers(self):
     if cfg.TRAIN.TRUNCATED:
@@ -99,7 +99,7 @@ class FeaturePyramidNetwork():
 
   def merge_outputs(self):
     for output_name in self._output_name_list:
-      outputs = [self._statge_outputs[stage_name][output_name] \
+      outputs = [self._stage_outputs[stage_name][output_name] \
         for stage_name in self._stage_outputs]
       outputs = tf.concat(values=outputs, axis=0)
       self._merge_outputs[output_name] = outputs
