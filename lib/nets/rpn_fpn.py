@@ -72,4 +72,4 @@ class RPN_FPN(FeaturePyramidNetwork):
 
 
   def build_heads(self):
-    super(RPN_FPN, self).build_heads(build_rpn_head, 'RPN_FPN')
+    FeaturePyramidNetwork.build_heads(self, build_rpn_head, 'RPN_FPN')
