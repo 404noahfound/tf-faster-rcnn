@@ -225,6 +225,7 @@ class resnetv1(Network):
                                    blocks[-1:],
                                    global_pool=False,
                                    include_root_block=False,
+                                   reuse=True,
                                    scope=self._resnet_scope)
 
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
