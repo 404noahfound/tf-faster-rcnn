@@ -51,7 +51,7 @@ class RPN_FPN(FeaturePyramidNetwork):
         rpn_bbox_pred, "rois")
 
       # TODO: figure out what this part is doing
-      rpn_labels = base_net._anchor_target_layer(rpn_cls_score, "anchor")
+      rpn_labels = base_net._anchor_target_layer(rpn_cls_score_raw, "anchor")
       # Try to have a deterministic order for the computing graph,
       # for reproducibility
       with tf.control_dependencies([rpn_labels]):
