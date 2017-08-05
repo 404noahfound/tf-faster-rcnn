@@ -154,6 +154,7 @@ class resnetv1(Network):
     if cfg.USE_RPN_FPN:
       fpn = RPN_FPN(self)
       outputs = fpn.build_net()
+      self._predictions = outputs
       return outputs['rois']
     is_training = self._is_training
     net_conv = self._layers['head']
@@ -264,11 +265,6 @@ class resnetv1(Network):
 
     self._layers['head'], self._layers['end_points'] = self.build_resnet()
 
-    # TODO: Warning! delete this line of test code immediately after test
-    for n in self._layers['end_points']:
-      print(n)
-    # testing for all variable names
-    # remember to delete this
     rois,cls_prob,bbox_pred = self.build_faster_rcnn_component()
 
     return rois, cls_prob, bbox_pred
