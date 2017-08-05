@@ -7,7 +7,7 @@ from model.config import cfg
 
 def test_model_graph(net):
   # TODO: maintain num_classes
-  num_classes = 100
+  num_classes = 128
   tfconfig = tf.ConfigProto(allow_soft_placement=True)
   tfconfig.gpu_options.allow_growth = True
   with tf.Session(config=tfconfig) as sess:
