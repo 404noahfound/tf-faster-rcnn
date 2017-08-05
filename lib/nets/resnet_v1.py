@@ -114,6 +114,9 @@ class resnetv1(Network):
     return blocks
 
   def build_resnet(self):
+    # TODO:
+    # issue: the two parts have different scope names!
+    # set reuse = True does not work.
     is_training = self._is_training
     blocks = self.build_resnet_blocks()
     with slim.arg_scope(resnet_arg_scope(is_training=False)):
@@ -124,17 +127,15 @@ class resnetv1(Network):
                                      blocks[0:cfg.RESNET.FIXED_BLOCKS],
                                      global_pool=False,
                                      include_root_block=False,
-                                     reuse=True,
                                      scope=self._resnet_scope)
     if cfg.RESNET.FIXED_BLOCKS < 3:
       with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
-        net_conv, end_points = resnet_v1.resnet_v1(net_conv,
+        net_conv, new_end_points = resnet_v1.resnet_v1(net_conv,
                                            blocks[cfg.RESNET.FIXED_BLOCKS:-1],
                                            global_pool=False,
-                                           reuse=True,
                                            include_root_block=False,
                                            scope=self._resnet_scope)
-
+        end_points.update(new_end_points)
     self._act_summaries.append(net_conv)
     return net_conv, end_points
 
