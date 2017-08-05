@@ -24,7 +24,8 @@ class RPN_FPN(FeaturePyramidNetwork):
     is_training = self._is_training
     net_conv = base_layer
     # TODO:implement anchor_component
-    num_anchors = base_net._anchor_component()
+    num_anchors = base_net._num_anchors
+    base_net._anchor_component()
     rpn = slim.conv2d(net_conv, 256, [3,3], trainable=is_training,
       weights_initializer=initializer, scope="rpn_conv/3x3")
     base_net._act_summaries.append(rpn)
