@@ -286,7 +286,7 @@ __C.ANCHOR_SCALES = [8,16,32]
 __C.ANCHOR_RATIOS = [0.5,1,2]
 
 # Use Feature Pyramid on RPN
-__C.USE_RPN_FPN = False
+__C.USE_RPN_FPN = True
 
 
 def get_output_dir(imdb, weights_filename):
