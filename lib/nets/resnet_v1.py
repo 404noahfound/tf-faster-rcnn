@@ -256,7 +256,8 @@ class resnetv1(Network):
     self._layers['head'] = self.build_resnet()
     # testing for all variable names
     # remember to delete this
-    print([n.name for n in tf.get_default_graph().as_graph_def().node])
+    for n in tf.get_default_graph().as_graph_def().node:
+      print(n.name)
     rois,cls_prob,bbox_pred = self.build_faster_rcnn_component()
 
     return rois, cls_prob, bbox_pred
