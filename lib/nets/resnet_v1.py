@@ -227,7 +227,11 @@ class resnetv1(Network):
       #                              include_root_block=False,
       #                              reuse=True,
       #                              scope=self._resnet_scope)
+
+      # this line is only for test, delete it!
+      print('shape of pool5: {}'.format(tf.shape(pool5)))
       fc7 = slim.fully_connected(pool5, 1024)
+      print('shape of fc7: {}'.format(tf.shape(fc7)))
 
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
       # Average pooling done by reduce_mean
