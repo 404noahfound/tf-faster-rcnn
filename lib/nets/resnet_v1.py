@@ -259,7 +259,7 @@ class resnetv1(Network):
 
     # TODO: Warning! delete this line of test code immediately after test
     for n in self._layers['end_points']:
-      print n.name
+      print(n.name)
     # testing for all variable names
     # remember to delete this
     rois,cls_prob,bbox_pred = self.build_faster_rcnn_component()
