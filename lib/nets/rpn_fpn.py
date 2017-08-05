@@ -18,7 +18,7 @@ class RPN_FPN(FeaturePyramidNetwork):
       }
     self._net_begin = 2
 
-  def build_rpn_head(base_layer):
+  def build_rpn_head(self, base_layer):
     base_net = self._base_net
     initializer, _ = self.set_initializers()
     is_training = self._is_training
@@ -71,5 +71,5 @@ class RPN_FPN(FeaturePyramidNetwork):
     return rois, output
 
 
-  def build_heads():
+  def build_heads(self):
     super(RPN_FPN, self).build_heads(build_rpn_head, 'RPN_FPN')
