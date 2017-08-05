@@ -9,7 +9,7 @@
 
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
-
+from model.config import cfg
 
 class FeaturePyramidNetwork():
 
