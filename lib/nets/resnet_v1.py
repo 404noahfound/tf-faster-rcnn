@@ -121,7 +121,7 @@ class resnetv1(Network):
     blocks = self.build_resnet_blocks()
     with slim.arg_scope(resnet_arg_scope(is_training=False)):
       net_conv = self.build_base()
-      
+
     if cfg.RESNET.FIXED_BLOCKS > 0:
       raise NotImplementedError('support for FIXED_BLOCKS is removed')
       # with slim.arg_scope(resnet_arg_scope(is_training=False)):
@@ -137,7 +137,6 @@ class resnetv1(Network):
                                            blocks,
                                            global_pool=False,
                                            include_root_block=False,
-                                           reuse=True,
                                            scope=self._resnet_scope)
     self._act_summaries.append(net_conv)
     return net_conv, end_points
