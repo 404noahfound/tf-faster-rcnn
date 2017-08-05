@@ -77,6 +77,8 @@ class FeaturePyramidNetwork():
     return self._layers
 
   def build_heads(self, head_builder, head_name):
+    raise NotImplementedError('child class must implement this method')
+    # this is only a template
     scope = self._name + '/' + head_name
     with tf.variable_scope(scope):
       for layer_key in self._layers:
