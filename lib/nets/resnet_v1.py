@@ -134,6 +134,7 @@ class resnetv1(Network):
                                            blocks[cfg.RESNET.FIXED_BLOCKS:-1],
                                            global_pool=False,
                                            include_root_block=False,
+                                           reuse=True,
                                            scope=self._resnet_scope)
         end_points.update(new_end_points)
     self._act_summaries.append(net_conv)
