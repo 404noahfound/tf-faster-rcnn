@@ -77,6 +77,6 @@ class RPN_FPN(FeaturePyramidNetwork):
       for layer_key in self._layers:
         layer = self._layers[layer_key]
         with tf.variable_scope(layer_key):
-          head, output = build_rpn_head(layer)
+          head, output = self.build_rpn_head(layer)
           self._heads[layer_key] = head
           self._statge_outputs[layer_key] = output
