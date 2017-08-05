@@ -124,12 +124,14 @@ class resnetv1(Network):
                                      blocks[0:cfg.RESNET.FIXED_BLOCKS],
                                      global_pool=False,
                                      include_root_block=False,
+                                     reuse=True,
                                      scope=self._resnet_scope)
     if cfg.RESNET.FIXED_BLOCKS < 3:
       with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
         net_conv, end_points = resnet_v1.resnet_v1(net_conv,
                                            blocks[cfg.RESNET.FIXED_BLOCKS:-1],
                                            global_pool=False,
+                                           reuse=True,
                                            include_root_block=False,
                                            scope=self._resnet_scope)
 
