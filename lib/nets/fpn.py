@@ -44,7 +44,7 @@ class FeaturePyramidNetwork():
   def _load_input_layers(self):
     input_layers = {}
     for key in self._net_map:
-      input_layers[key] = self._base_net.get_layer(key)
+      input_layers[key] = self._base_net.get_layer(self._net_map[key])
     self._input_layers = input_layers
 
 

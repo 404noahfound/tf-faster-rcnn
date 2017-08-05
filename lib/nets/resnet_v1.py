@@ -247,6 +247,8 @@ class resnetv1(Network):
     return rois, cls_prob, bbox_pred
 
   def get_layer(self, layer_name):
+    assert layer_name in self._layers['end_points'],
+      '%s is not in the end_points'%layer_name
     return self._layers['end_points'][layer_name]
 
   def build_network(self, sess, is_training=True):
