@@ -204,7 +204,7 @@ class resnetv1(Network):
     self._predictions["cls_pred"] = cls_pred
     self._predictions["cls_prob"] = cls_prob
     self._predictions["bbox_pred"] = bbox_pred
-    self._predictions["rois"] =
+    self._predictions["rois"] = rois
     for name in self._predictions:
       shape = self._predictions[name].get_shape()
       print('shape of prediction {} is {}'.format(name, shape))
