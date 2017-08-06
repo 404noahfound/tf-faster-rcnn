@@ -105,6 +105,6 @@ class FeaturePyramidNetwork():
       for stage_name in self._stage_outputs:
         print('unmerged output size for stage {}: {}'.format\
         (stage_name, self._stage_outputs[stage_name][output_name].get_shape()))
-      outputs = tf.concat(values=outputs, axis=0)
+      outputs = tf.concat(values=outputs, axis=1)
       self._merge_outputs[output_name] = outputs
       print('merged output size: {}'.format(outputs.get_shape()))
