@@ -99,7 +99,8 @@ class FeaturePyramidNetwork():
 
   def merge_outputs(self):
     for output_name in self._output_name_list:
-      self.merge_output_for(output_name, axis=1)
+      if output_name not in self._merge_outputs:
+        self.merge_output_for(output_name, axis=1)
 
   def merge_output_for(self, output_name, axis=1):
     if output_name in self._merge_outputs:

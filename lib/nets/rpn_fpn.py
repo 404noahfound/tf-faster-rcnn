@@ -84,4 +84,5 @@ class RPN_FPN(FeaturePyramidNetwork):
 
   def merge_outputs(self):
     self.merge_output_for('rois', axis=0)
+    self.merge_output_for('rpn_cls_pred', axis=0)
     FeaturePyramidNetwork.merge_outputs(self)
