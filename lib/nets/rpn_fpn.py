@@ -81,3 +81,7 @@ class RPN_FPN(FeaturePyramidNetwork):
           head, output = self.build_rpn_head(layer)
           self._heads[layer_key] = head
           self._stage_outputs[layer_key] = output
+
+  def merge_outputs(self):
+    self.merge_output_for('rois', axis=0)
+    FeaturePyramidNetwork.merge_outputs(self)
