@@ -204,7 +204,10 @@ class resnetv1(Network):
     self._predictions["cls_pred"] = cls_pred
     self._predictions["cls_prob"] = cls_prob
     self._predictions["bbox_pred"] = bbox_pred
-    self._predictions["rois"] = rois
+    self._predictions["rois"] =
+    for name in self._predictions:
+      shape = self._predictions[name].get_shape()
+      print('shape of prediction {} is {}'.format(name, shape))
 
     self._score_summaries.update(self._predictions)
 
@@ -233,5 +236,5 @@ class resnetv1(Network):
         restorer_fc = tf.train.Saver({self._resnet_scope + "/conv1/weights": conv1_rgb})
         restorer_fc.restore(sess, pretrained_model)
 
-        sess.run(tf.assign(self._variables_to_fix[self._resnet_scope + '/conv1/weights:0'], 
+        sess.run(tf.assign(self._variables_to_fix[self._resnet_scope + '/conv1/weights:0'],
                            tf.reverse(conv1_rgb, [2])))
