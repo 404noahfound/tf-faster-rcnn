@@ -102,7 +102,7 @@ class FeaturePyramidNetwork():
       self.merge_output_for(output_name, axis=1)
 
   def merge_output_for(self, output_name, axis=1):
-    if self._merge_outputs[output_name] is not None:
+    if output_name in self._merge_outputs:
       print('{} is already merged!'.format(output_name))
       raise NotImplementedError
 
