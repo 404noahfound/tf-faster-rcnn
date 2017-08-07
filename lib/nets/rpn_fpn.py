@@ -102,5 +102,6 @@ class RPN_FPN(FeaturePyramidNetwork):
   def merge_proposal_targets_layer(self):
     for output_name in self._proposal_targets_list:
       if 'pt_'+output_name not in self._merge_outputs:
-        self._base_net._proposal_targets[output_name] = \
-          self.merge_output_for('pt_'+output_name, axis=1)
+        output = self.merge_output_for('pt_'+output_name, axis=1)
+        self._base_net._proposal_targets[output_name] = output
+        print('shape of {} is {}'.format(output_name, output.get_shape()))
