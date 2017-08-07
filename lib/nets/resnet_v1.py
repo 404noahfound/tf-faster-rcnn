@@ -221,16 +221,16 @@ class resnetv1(Network):
       else:
         raise NotImplementedError
     with slim.arg_scope(resnet_arg_scope(is_training=is_training)):
-      # fc7, _ = resnet_v1.resnet_v1(pool5,
-      #                              blocks[-1:],
-      #                              global_pool=False,
-      #                              include_root_block=False,
-      #                              reuse=True,
-      #                              scope=self._resnet_scope)
+      fc7, _ = resnet_v1.resnet_v1(pool5,
+                                   blocks[-1:],
+                                   global_pool=False,
+                                   include_root_block=False,
+                                   reuse=True,
+                                   scope=self._resnet_scope + '_res_conv')
 
       # this line is only for test, delete it!
       print('shape of pool5: {}'.format(pool5.get_shape()))
-      fc7 = slim.fully_connected(pool5, 1024)
+    #   fc7 = slim.fully_connected(pool5, 1024)
       print('shape of fc7: {}'.format(fc7.get_shape()))
 
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
