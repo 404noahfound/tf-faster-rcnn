@@ -272,8 +272,8 @@ class resnetv1(Network):
     self._layers['head'], self._layers['end_points'] = self.build_resnet()
 
     rois,cls_prob,bbox_pred = self.build_faster_rcnn_component()
-    for pred in self._predictions:
-      print('shape of prediction {} is {}'.format(pred, self._predictions[pred].get_shape()))
+    # for pred in self._predictions:
+    #   print('shape of prediction {} is {}'.format(pred, self._predictions[pred].get_shape()))
 
     return rois, cls_prob, bbox_pred
 

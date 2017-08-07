@@ -9,6 +9,9 @@ class RPN_FPN(FeaturePyramidNetwork):
     self._output_name_list = \
       ["rpn_cls_score", 'rpn_cls_score_reshape', 'rpn_cls_prob',
         'rpn_cls_pred', 'rpn_bbox_pred', 'rpn_bbox_pred', 'rois']
+    self._proposal_targets_list = \
+      ['rois', 'labels', 'bbox_targets', 'bbox_inside_weights',
+       'bbox_outside_weights']
     self._net_map = {
                   #  'C1':'resnet_v1_50/conv1/Relu:0',
                    'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
@@ -70,17 +73,9 @@ class RPN_FPN(FeaturePyramidNetwork):
     output["rpn_bbox_pred"] = rpn_bbox_pred
     output["rois"] = rois
 
-    output['pt_rois'] = \
-      base_net._proposal_targets['rois']
-    output['pt_labels'] = \
-      base_net._proposal_targets['labels']
-    output['pt_bbox_targets'] = \
-      base_net._proposal_targets['bbox_targets']
-    output['pt_bbox_inside_weights'] = \
-      base_net._proposal_targets['bbox_inside_weights']
-    output['pt_bbox_outside_weights'] = \
-      base_net._proposal_targets['bbox_outside_weights']
-      
+    for name in self._proposal_targets_list:
+      output['pt_{}'.format(name)] = base_net._proposal_targets[name]
+
     return rois, output
 
 
@@ -94,7 +89,18 @@ class RPN_FPN(FeaturePyramidNetwork):
           self._heads[layer_key] = head
           self._stage_outputs[layer_key] = output
 
+  def build_net(self):
+    merge_output = FeaturePyramidNetwork.build_net(self)
+    self.merge_proposal_targets_layer()
+    return merge_output
+
   def merge_outputs(self):
     self.merge_output_for('rois', axis=0)
     self.merge_output_for('rpn_cls_pred', axis=0)
     FeaturePyramidNetwork.merge_outputs(self)
+
+  def merge_proposal_targets_layer(self):
+    for output_name in self._proposal_targets_list:
+      if 'pt_'+output_name not in self._merge_outputs:
+        self._base_net._proposal_targets[output_name] = \
+          self.merge_output_for('pt_'+output_name, axis=1)

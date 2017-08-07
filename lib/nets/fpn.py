@@ -107,11 +107,9 @@ class FeaturePyramidNetwork():
       print('{} is already merged!'.format(output_name))
       raise NotImplementedError
 
-    print('merging output for %s' % output_name)
     outputs = [self._stage_outputs[stage_name][output_name] \
       for stage_name in self._stage_outputs]
     for stage_name in self._stage_outputs:
-      print('unmerged output size for stage {}: {}'.format\
       (stage_name, self._stage_outputs[stage_name][output_name].get_shape()))
     outputs = tf.concat(values=outputs, axis=axis)
     self._merge_outputs[output_name] = outputs
