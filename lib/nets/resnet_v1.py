@@ -225,7 +225,6 @@ class resnetv1(Network):
                                    blocks[-1:],
                                    global_pool=False,
                                    include_root_block=False,
-                                   reuse=True,
                                    scope=self._resnet_scope + '_res_conv')
 
       # this line is only for test, delete it!
