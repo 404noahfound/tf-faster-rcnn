@@ -224,11 +224,14 @@ class Network(object):
   def _add_losses(self, sigma_rpn=3.0):
     with tf.variable_scope('loss_' + self._tag) as scope:
       # RPN, class loss
-      rpn_cls_score = tf.reshape(self._predictions['rpn_cls_score_reshape'], [-1, 2])
-      rpn_label = tf.reshape(self._anchor_targets['rpn_labels'], [-1])
+      rpn_num = cfg.TRAIN.RPN_BATCHSIZE
+      if cfg.USE_RPN_FPN:
+        rpn_num *= 4
+      rpn_cls_score = tf.reshape(self._predictions['rpn_cls_score_reshape'], [rpn_num, 2])
+      rpn_label = tf.reshape(self._anchor_targets['rpn_labels'], [rpn_num])
       rpn_select = tf.where(tf.not_equal(rpn_label, -1))
-      rpn_cls_score = tf.reshape(tf.gather(rpn_cls_score, rpn_select), [-1, 2])
-      rpn_label = tf.reshape(tf.gather(rpn_label, rpn_select), [-1])
+      rpn_cls_score = tf.reshape(tf.gather(rpn_cls_score, rpn_select), [rpn_num, 2])
+      rpn_label = tf.reshape(tf.gather(rpn_label, rpn_select), [rpn_num])
       rpn_cross_entropy = tf.reduce_mean(
         tf.nn.sparse_softmax_cross_entropy_with_logits(logits=rpn_cls_score, labels=rpn_label))
 
@@ -243,11 +246,11 @@ class Network(object):
 
       # RCNN, class loss
       cls_score = self._predictions["cls_score"]
-      label = tf.reshape(self._proposal_targets["labels"], [-1])
+      label = tf.reshape(self._proposal_targets["labels"], [rpn_num])
 
       cross_entropy = tf.reduce_mean(
         tf.nn.sparse_softmax_cross_entropy_with_logits(
-          logits=tf.reshape(cls_score, [-1, self._num_classes]), labels=label))
+          logits=tf.reshape(cls_score, [rpn_num, self._num_classes]), labels=label))
 
       # RCNN, bbox loss
       bbox_pred = self._predictions['bbox_pred']
