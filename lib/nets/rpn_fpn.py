@@ -69,6 +69,18 @@ class RPN_FPN(FeaturePyramidNetwork):
     output["rpn_cls_pred"] = rpn_cls_pred
     output["rpn_bbox_pred"] = rpn_bbox_pred
     output["rois"] = rois
+
+    output['pt_rois'] = \
+      base_net._proposal_targets['rois']
+    output['pt_labels'] = \
+      base_net._proposal_targets['labels']
+    output['pt_bbox_targets'] = \
+      base_net._proposal_targets['bbox_targets']
+    output['pt_bbox_inside_weights'] = \
+      base_net._proposal_targets['bbox_inside_weights']
+    output['pt_bbox_outside_weights'] = \
+      base_net._proposal_targets['bbox_outside_weights']
+      
     return rois, output
 
 
