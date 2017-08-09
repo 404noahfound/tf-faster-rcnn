@@ -336,7 +336,7 @@ class Network(object):
       for key, var in self._score_summaries.items():
         if isinstance(var, dict):
           for key2 in var:
-            self._add_score_summary("{}_{}".format(key1, key2), var[key2])
+            self._add_score_summary("{}_{}".format(key, key2), var[key2])
         else:
           self._add_score_summary(key, var)
       for var in self._act_summaries:
