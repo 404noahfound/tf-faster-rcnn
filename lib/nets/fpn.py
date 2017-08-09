@@ -105,9 +105,9 @@ class FeaturePyramidNetwork():
       shapes = [tensor_dict[tensor_name].get_shape()\
         for tensor_name in tensor_dict]
       for s in shapes:
-        if s != shapes[0]
-        print(shapes)
-        return False
+        if s != shapes[0]:
+          print(shapes)
+          return False
       return True
 
     for name in name_list:
