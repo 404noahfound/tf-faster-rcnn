@@ -44,7 +44,7 @@ class RPN_FPN(FeaturePyramidNetwork):
     rpn = slim.conv2d(net_conv, 256, [3,3], trainable=is_training,
       weights_initializer=initializer, scope="rpn_conv/3x3")
     base_net._act_summaries.append(rpn)
-    rpn_cls_score_raw = slim.conv2d(rpn, base_net._num_anchors * 2, [1, 1],
+    rpn_cls_score_raw = slim.conv2d(rpn, num_anchors * 2, [1, 1],
       trainable=is_training, weights_initializer=initializer, padding='VALID',
       activation_fn=None, scope='rpn_cls_score_raw')
     # TODO: implemnt reshape layer
@@ -62,8 +62,13 @@ class RPN_FPN(FeaturePyramidNetwork):
                                  padding='VALID', activation_fn=None,
                                  scope='rpn_bbox_pred')
     if is_training:
-      rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
-        rpn_bbox_pred, "rois")
+      try:
+        rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
+          rpn_bbox_pred, "rois")
+      except InvalidArgumentError:
+        print("shape of rpn_cls_prob is {}".format(rpn_cls_prob_reshape.get_shape()))
+        print("shape of rpn_bbox_pred is {}".format(rpn_bbox_pred.get_shape()))
+        exit()
 
       # TODO: figure out what this part is doing
       rpn_labels = base_net._anchor_target_layer(rpn_cls_score_raw, "anchor")
