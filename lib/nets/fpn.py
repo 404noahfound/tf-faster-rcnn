@@ -38,7 +38,7 @@ class FeaturePyramidNetwork():
     self._load_input_layers()
     self.build_pyramid()
     self.build_heads()
-    # self.merge_outputs()
+    self.merge_outputs()
     return self._merge_outputs
 
   def _load_input_layers(self):
