@@ -237,42 +237,42 @@ class Network(object):
         rpn_cross_entropy = tf.reduce_mean(
           tf.nn.sparse_softmax_cross_entropy_with_logits(logits=rpn_cls_score, labels=rpn_label))
 
-      # RPN, bbox loss
-      if cfg.USE_RPN_FPN:
-        rpn_loss_box = self._rpn_fpn.get_rpn_loss_box(sigma_rpn)
-      else:
-        rpn_bbox_pred = self._predictions['rpn_bbox_pred']
-        rpn_bbox_targets = self._anchor_targets['rpn_bbox_targets']
-        rpn_bbox_inside_weights = self._anchor_targets['rpn_bbox_inside_weights']
-        rpn_bbox_outside_weights = self._anchor_targets['rpn_bbox_outside_weights']
-        rpn_loss_box = self._smooth_l1_loss(rpn_bbox_pred, rpn_bbox_targets, rpn_bbox_inside_weights,
-                                          rpn_bbox_outside_weights, sigma=sigma_rpn, dim=[1, 2, 3])
+    # RPN, bbox loss
+    if cfg.USE_RPN_FPN:
+      rpn_loss_box = self._rpn_fpn.get_rpn_loss_box(sigma_rpn)
+    else:
+      rpn_bbox_pred = self._predictions['rpn_bbox_pred']
+      rpn_bbox_targets = self._anchor_targets['rpn_bbox_targets']
+      rpn_bbox_inside_weights = self._anchor_targets['rpn_bbox_inside_weights']
+      rpn_bbox_outside_weights = self._anchor_targets['rpn_bbox_outside_weights']
+      rpn_loss_box = self._smooth_l1_loss(rpn_bbox_pred, rpn_bbox_targets, rpn_bbox_inside_weights,
+                                        rpn_bbox_outside_weights, sigma=sigma_rpn, dim=[1, 2, 3])
 
-      # RCNN, class loss
-      cls_score = self._predictions["cls_score"]
-      label = tf.reshape(self._proposal_targets["labels"], [rpn_num])
+    # RCNN, class loss
+    cls_score = self._predictions["cls_score"]
+    label = tf.reshape(self._proposal_targets["labels"], [rpn_num])
 
-      cross_entropy = tf.reduce_mean(
-        tf.nn.sparse_softmax_cross_entropy_with_logits(
-          logits=tf.reshape(cls_score, [rpn_num, self._num_classes]), labels=label))
+    cross_entropy = tf.reduce_mean(
+      tf.nn.sparse_softmax_cross_entropy_with_logits(
+        logits=tf.reshape(cls_score, [rpn_num, self._num_classes]), labels=label))
 
-      # RCNN, bbox loss
-      bbox_pred = self._predictions['bbox_pred']
-      bbox_targets = self._proposal_targets['bbox_targets']
-      bbox_inside_weights = self._proposal_targets['bbox_inside_weights']
-      bbox_outside_weights = self._proposal_targets['bbox_outside_weights']
+    # RCNN, bbox loss
+    bbox_pred = self._predictions['bbox_pred']
+    bbox_targets = self._proposal_targets['bbox_targets']
+    bbox_inside_weights = self._proposal_targets['bbox_inside_weights']
+    bbox_outside_weights = self._proposal_targets['bbox_outside_weights']
 
-      loss_box = self._smooth_l1_loss(bbox_pred, bbox_targets, bbox_inside_weights, bbox_outside_weights)
+    loss_box = self._smooth_l1_loss(bbox_pred, bbox_targets, bbox_inside_weights, bbox_outside_weights)
 
-      self._losses['cross_entropy'] = cross_entropy
-      self._losses['loss_box'] = loss_box
-      self._losses['rpn_cross_entropy'] = rpn_cross_entropy
-      self._losses['rpn_loss_box'] = rpn_loss_box
+    self._losses['cross_entropy'] = cross_entropy
+    self._losses['loss_box'] = loss_box
+    self._losses['rpn_cross_entropy'] = rpn_cross_entropy
+    self._losses['rpn_loss_box'] = rpn_loss_box
 
-      loss = cross_entropy + loss_box + rpn_cross_entropy + rpn_loss_box
-      self._losses['total_loss'] = loss
+    loss = cross_entropy + loss_box + rpn_cross_entropy + rpn_loss_box
+    self._losses['total_loss'] = loss
 
-      self._event_summaries.update(self._losses)
+    self._event_summaries.update(self._losses)
 
     return loss
 
