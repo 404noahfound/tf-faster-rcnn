@@ -20,6 +20,7 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
 
   print(rpn_cls_prob.shape)
   print(rpn_bbox_pred.shape)
+  print('\n\n')
   if type(cfg_key) == bytes:
       cfg_key = cfg_key.decode('utf-8')
   pre_nms_topN = cfg[cfg_key].RPN_PRE_NMS_TOP_N
