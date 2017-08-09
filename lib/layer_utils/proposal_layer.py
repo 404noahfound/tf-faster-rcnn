@@ -17,6 +17,9 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
   """A simplified version compared to fast/er RCNN
      For details please see the technical report
   """
+
+  print(rpn_cls_prob.get_shape())
+  print(rpn_bbox_pred.get_shape())
   if type(cfg_key) == bytes:
       cfg_key = cfg_key.decode('utf-8')
   pre_nms_topN = cfg[cfg_key].RPN_PRE_NMS_TOP_N
