@@ -100,6 +100,7 @@ class FeaturePyramidNetwork():
 
   def merger(self, name_list, stage_outputs, merge_outputs):
     for name in name_list:
+      print(name_list[name])
       merge_outputs[name] = self.merger_for(stage_outputs[name],
         merge_outputs[name], axis=name_list[name])
     return merge_outputs
