@@ -38,7 +38,8 @@ class FeaturePyramidNetwork():
     self._load_input_layers()
     self.build_pyramid()
     self.build_heads()
-    self.merge_outputs()
+    # self.merge_outputs()
+    self._add_losses()
     return self._merge_outputs
 
   def _load_input_layers(self):
@@ -98,14 +99,23 @@ class FeaturePyramidNetwork():
       initializer_bbox = tf.random_normal_initializer(mean=0.0, stddev=0.001)
     return initializer, initializer_bbox
 
+
   def merger(self, name_list, stage_outputs, merge_outputs):
+    def is_same_shape(tensor_dict):
+      shapes = [tensor_dict[tensor_name].get_shape()\
+        for tensor_name in tensor_dict]
+      for s in shapes:
+        if s != shapes[0]
+        print(shapes)
+        return False
+      return True
+
     for name in name_list:
-      try:
-        merge_outputs[name] = self.merger_for(stage_outputs[name], name_list[name])
-      except InvalidArgumentError:
-        print('invalid argument for {}'.format(name))
-        print(stage_outputs[name])
-        raise InvalidArgumentError
+      if not is_same_shape(stage_outputs[name]):
+        print('shape of {} is not equal'.format(name))
+        raise Error
+      merge_outputs[name] = self.merger_for(stage_outputs[name], name_list[name])
+
 
     return merge_outputs
 

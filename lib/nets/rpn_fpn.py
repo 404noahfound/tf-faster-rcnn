@@ -30,7 +30,7 @@ class RPN_FPN(FeaturePyramidNetwork):
                    'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
                    'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
       }
-
+    self._stage_list = ['P2', 'P3', 'P4', 'P5']
     self._net_begin = 2
 
   def build_rpn_head(self, base_layer):
@@ -85,10 +85,11 @@ class RPN_FPN(FeaturePyramidNetwork):
     predictions["rpn_bbox_pred"] = rpn_bbox_pred
     predictions["rois"] = rois
 
-    proposal_targets = base_net._proposal_targets
-    anchor_targets = base_net._anchor_targets
-    outputs = {'predictions': predictions, 'proposal_targets': proposal_targets,
-      'anchor_targets': anchor_targets}
+    self._proposal_targets = base_net._proposal_targets
+    self._anchor_targets = base_net._anchor_targets
+    self._predictions = predictions
+    # outputs = {'predictions': predictions, 'proposal_targets': proposal_targets,
+    #   'anchor_targets': anchor_targets}
 
     return rois, outputs
 
@@ -122,9 +123,26 @@ class RPN_FPN(FeaturePyramidNetwork):
     base_net._score_summaries.update(base_net._predictions)
     return self._merge_outputs
 
-  # def merge_proposal_targets_layer(self):
-  #   for output_name in self._proposal_targets_list:
-  #     if 'pt_'+output_name not in self._merge_outputs:
-  #       output = self.merge_output_for('pt_'+output_name, axis=0)
-  #       self._base_net._proposal_targets[output_name] = output
-  #       print('shape of {} is {}'.format(output_name, output.get_shape()))
+  # def get_stage_output(self):
+  #   predictions = \
+  #     dict((output_name, self._predictions[output_name][stage]) \
+  #     for output_name in self._predictions)
+  #   proposal_targets = \
+  #     dict((output_name, self._proposal_targets[output_name][stage]) \
+  #     for output_name in self._proposal_targets)
+
+
+  # def _add_losses(self, sigma_rpn=3.0):
+  #   for stage in self._stage_list:
+  #     with tf.variable_scope('loss_' + stage) as scope:
+  #     # RPN, class loss
+  #     rpn_num = cfg.TRAIN.RPN_BATCHSIZE
+  #     rpn_cls_score = tf.reshape(self._predictions['rpn_cls_score_reshape'], [rpn_num, 2])
+  #     rpn_label = tf.reshape(self._anchor_targets['rpn_labels'], [rpn_num])
+  #     rpn_select = tf.where(tf.not_equal(rpn_label, -1))
+  #     rpn_cls_score = tf.reshape(tf.gather(rpn_cls_score, rpn_select), [rpn_num, 2])
+  #     rpn_label = tf.reshape(tf.gather(rpn_label, rpn_select), [rpn_num])
+  #     rpn_cross_entropy = tf.reduce_mean(
+  #       tf.nn.sparse_softmax_cross_entropy_with_logits(logits=rpn_cls_score, labels=rpn_label))
+  #
+  #     # RPN, bbox loss

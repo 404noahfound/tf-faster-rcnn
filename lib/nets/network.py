@@ -165,11 +165,13 @@ class Network(object):
 
     return rpn_labels
 
-  def _proposal_target_layer(self, rois, roi_scores, name):
+  def _proposal_target_layer(self, rois, roi_scores, name, gt_boxes = None):
+    if gt_boxes is None:
+      gt_boxes = self._gt_boxes
     with tf.variable_scope(name) as scope:
       rois, roi_scores, labels, bbox_targets, bbox_inside_weights, bbox_outside_weights = tf.py_func(
         proposal_target_layer,
-        [rois, roi_scores, self._gt_boxes, self._num_classes],
+        [rois, roi_scores, gt_boxes, self._num_classes],
         [tf.float32, tf.float32, tf.float32, tf.float32, tf.float32, tf.float32])
 
       rois.set_shape([cfg.TRAIN.BATCH_SIZE, 5])
