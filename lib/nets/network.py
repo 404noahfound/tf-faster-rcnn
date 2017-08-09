@@ -161,6 +161,9 @@ class Network(object):
       self._anchor_targets['rpn_bbox_inside_weights'] = rpn_bbox_inside_weights
       self._anchor_targets['rpn_bbox_outside_weights'] = rpn_bbox_outside_weights
 
+      for name in self._anchor_target_layer:
+        print('shape of {} is {}'.format(name, self._anchor_target_layer[name]))
+      exit()
       self._score_summaries.update(self._anchor_targets)
 
     return rpn_labels
@@ -228,7 +231,7 @@ class Network(object):
       if cfg.USE_RPN_FPN:
         rpn_num *= 4
       rpn_cls_score = tf.reshape(self._predictions['rpn_cls_score_reshape'], [rpn_num, 2])
-      # rpn_label = tf.reshape(self._anchor_targets['rpn_labels'], [rpn_num])
+      rpn_label = tf.reshape(self._anchor_targets['rpn_labels'], [rpn_num])
       rpn_select = tf.where(tf.not_equal(rpn_label, -1))
       rpn_cls_score = tf.reshape(tf.gather(rpn_cls_score, rpn_select), [rpn_num, 2])
       rpn_label = tf.reshape(tf.gather(rpn_label, rpn_select), [rpn_num])
