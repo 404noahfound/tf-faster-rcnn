@@ -115,6 +115,8 @@ class FeaturePyramidNetwork():
       #   raise Error
       if name_list[name] != -1:
         merge_outputs[name] = self.merger_for(name, stage_outputs[name], name_list[name])
+      else:
+        merge_outputs[name] = stage_outputs[name]
 
 
     return merge_outputs
