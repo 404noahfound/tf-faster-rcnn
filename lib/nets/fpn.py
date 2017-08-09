@@ -100,10 +100,9 @@ class FeaturePyramidNetwork():
 
   def merger(self, name_list, stage_outputs, merge_outputs):
     for name in name_list:
-      self.merger_for(stage_outputs[name], merge_outputs[name],
-        axis=name_list[name])
+      merge_outputs[name] = self.merger_for(stage_outputs[name],
+        merge_outputs[name], axis=name_list[name])
     return merge_outputs
 
-  def merger_for(self, stage_outputs, merge_outputs, axis=1):
-    merge_outputs = tf.concat(values=stage_outputs.values(), axis=axis)
-    return merge_outputs
+  def merger_for(self, stage_outputs, axis=1):
+    return tf.concat(values=stage_outputs.values(), axis=axis)
