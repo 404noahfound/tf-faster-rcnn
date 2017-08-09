@@ -119,6 +119,7 @@ class RPN_FPN(FeaturePyramidNetwork):
     base_net._predictions = self._merge_outputs['predictions']
     base_net._score_summaries.update(base_net._proposal_targets)
     base_net._score_summaries.update(base_net._predictions)
+    return self._merge_outputs
 
   # def merge_proposal_targets_layer(self):
   #   for output_name in self._proposal_targets_list:

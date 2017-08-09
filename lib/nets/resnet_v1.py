@@ -154,8 +154,7 @@ class resnetv1(Network):
     if cfg.USE_RPN_FPN:
       fpn = RPN_FPN(self)
       outputs = fpn.build_net()
-      self._predictions = outputs
-      return outputs['rois']
+      return self._predictions['rois']
     is_training = self._is_training
     net_conv = self._layers['head']
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
