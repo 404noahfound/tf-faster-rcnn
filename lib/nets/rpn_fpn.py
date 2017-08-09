@@ -159,5 +159,5 @@ class RPN_FPN(FeaturePyramidNetwork):
           tf.nn.sparse_softmax_cross_entropy_with_logits(
             logits=rpn_cls_score, labels=rpn_label))
     rpn_cross_entropy_merged = tf.stack(rpn_cross_entropy.values())
-    rpn_cross_entropy_merged = tf.reduce_mean(rpn_loss_box_merged, 0)
+    rpn_cross_entropy_merged = tf.reduce_mean(rpn_cross_entropy_merged, 0)
     return rpn_cross_entropy_merged
