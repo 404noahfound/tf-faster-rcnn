@@ -65,7 +65,7 @@ class RPN_FPN(FeaturePyramidNetwork):
       try:
         rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
           rpn_bbox_pred, "rois")
-      except InvalidArgumentError:
+      except:
         print("shape of rpn_cls_prob is {}".format(rpn_cls_prob_reshape.get_shape()))
         print("shape of rpn_bbox_pred is {}".format(rpn_bbox_pred.get_shape()))
         exit()
