@@ -109,13 +109,15 @@ class RPN_FPN(FeaturePyramidNetwork):
 
   def merge_outputs(self):
     base_net = self._base_net
+
     for output_group in self._output_name_list:
-      self.merger(
-        self._output_name_list[output_group],
-        self._stage_outputs[output_group],
-        self._merge_outputs[output_group]
-      )
-      print('merge content of {}:\n{}'.format(output_group, self._merge_outputs[output_group]))
+      with tf.variable_scope('output/'+output_group):
+        self.merger(
+          self._output_name_list[output_group],
+          self._stage_outputs[output_group],
+          self._merge_outputs[output_group]
+        )
+        print('merge content of {}:\n{}'.format(output_group, self._merge_outputs[output_group]))
     base_net._anchor_targets = self._merge_outputs['anchor_targets']
     base_net._proposal_targets = self._merge_outputs['proposal_targets']
     base_net._predictions = self._merge_outputs['predictions']

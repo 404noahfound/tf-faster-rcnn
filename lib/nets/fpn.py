@@ -100,23 +100,24 @@ class FeaturePyramidNetwork():
 
 
   def merger(self, name_list, stage_outputs, merge_outputs):
-    def is_same_shape(tensor_dict):
-      shapes = [tensor_dict[tensor_name].get_shape()\
-        for tensor_name in tensor_dict]
-      for s in shapes:
-        if s != shapes[0]:
-          print(shapes)
-          return False
-      return True
+    # def is_same_shape(tensor_dict):
+    #   shapes = [tensor_dict[tensor_name].get_shape()\
+    #     for tensor_name in tensor_dict]
+    #   for s in shapes:
+    #     if s != shapes[0]:
+    #       print(shapes)
+    #       return False
+    #   return True
 
     for name in name_list:
-      if not is_same_shape(stage_outputs[name]):
-        print('shape of {} is not equal'.format(name))
-        raise Error
-      merge_outputs[name] = self.merger_for(stage_outputs[name], name_list[name])
+      # if not is_same_shape(stage_outputs[name]):
+      #   print('shape of {} is not equal'.format(name))
+      #   raise Error
+      merge_outputs[name] = self.merger_for(name, stage_outputs[name], name_list[name])
 
 
     return merge_outputs
 
-  def merger_for(self, stage_outputs, axis):
-    return tf.concat(values=stage_outputs.values(), axis=axis)
+  def merger_for(self, name, stage_outputs, axis):
+    return tf.concat(values=stage_outputs.values(), axis=axis,
+      name='concat_'+name)
