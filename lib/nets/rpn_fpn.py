@@ -85,11 +85,11 @@ class RPN_FPN(FeaturePyramidNetwork):
     predictions["rpn_bbox_pred"] = rpn_bbox_pred
     predictions["rois"] = rois
 
-    self._proposal_targets = base_net._proposal_targets
-    self._anchor_targets = base_net._anchor_targets
-    self._predictions = predictions
-    # outputs = {'predictions': predictions, 'proposal_targets': proposal_targets,
-    #   'anchor_targets': anchor_targets}
+    proposal_targets = base_net._proposal_targets
+    anchor_targets = base_net._anchor_targets
+    predictions = predictions
+    outputs = {'predictions': predictions, 'proposal_targets': proposal_targets,
+      'anchor_targets': anchor_targets}
 
     return rois, outputs
 
