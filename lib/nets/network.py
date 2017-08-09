@@ -239,7 +239,7 @@ class Network(object):
 
       # RPN, bbox loss
       if cfg.USE_RPN_FPN:
-        rpn_loss_box = self._rpn_fpn.get_rpn_loss_box()
+        rpn_loss_box = self._rpn_fpn.get_rpn_loss_box(sigma_rpn)
       else:
         rpn_bbox_pred = self._predictions['rpn_bbox_pred']
         rpn_bbox_targets = self._anchor_targets['rpn_bbox_targets']

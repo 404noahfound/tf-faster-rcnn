@@ -124,7 +124,7 @@ class RPN_FPN(FeaturePyramidNetwork):
     base_net._score_summaries.update(base_net._predictions)
     return self._merge_outputs
 
-  def get_rpn_loss_box(self):
+  def get_rpn_loss_box(self, sigma_rpn):
     rpn_loss_box = {}
     for stage in self._stage_list:
       with tf.variable_scope('losses/' + stage):
