@@ -15,3 +15,4 @@ TRAIN:
 TEST:
   HAS_RPN: True
 POOLING_MODE: crop
+USE_RPN_FPN: True
