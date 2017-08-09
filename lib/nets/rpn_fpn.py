@@ -114,7 +114,6 @@ class RPN_FPN(FeaturePyramidNetwork):
         self._stage_outputs[output_group],
         self._merge_outputs[output_group]
       )
-      print('stage content of {}:\n{}'.format(output_group, self._stage_outputs[output_group]))
       print('merge content of {}:\n{}'.format(output_group, self._merge_outputs[output_group]))
     base_net._anchor_targets = self._merge_outputs['anchor_targets']
     base_net._proposal_targets = self._merge_outputs['proposal_targets']
