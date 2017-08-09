@@ -239,7 +239,6 @@ class Network(object):
 
       # RPN, bbox loss
       if cfg.USE_RPN_FPN:
-        raise NotImplementedError
         rpn_loss_box = self._rpn_fpn.get_rpn_loss_box()
       else:
         rpn_bbox_pred = self._predictions['rpn_bbox_pred']
