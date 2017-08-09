@@ -1,4 +1,4 @@
-  #!/bin/bash
+#!/bin/bash
 
   set -x
   set -e
@@ -88,5 +88,4 @@
       fi
   fi
 
-  ./experiments/scripts/test_faster_rcnn.sh $@
   mv LOG LOG".done"
