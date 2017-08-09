@@ -136,7 +136,7 @@ class RPN_FPN(FeaturePyramidNetwork):
           self._stage_outputs["anchor_targets"]['rpn_bbox_inside_weights'][stage]
         rpn_bbox_outside_weights = \
           self._stage_outputs["anchor_targets"]['rpn_bbox_outside_weights'][stage]
-        rpn_loss_box[stage] = self._smooth_l1_loss(rpn_bbox_pred,
+        rpn_loss_box[stage] = self._base_net._smooth_l1_loss(rpn_bbox_pred,
           rpn_bbox_targets, rpn_bbox_inside_weights, rpn_bbox_outside_weights,
           sigma=sigma_rpn, dim=[1, 2, 3])
     rpn_loss_box_merged = tf.stack(rpn_loss_box.values())
