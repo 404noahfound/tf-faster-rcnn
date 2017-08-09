@@ -72,6 +72,7 @@ class FeaturePyramidNetwork():
         s = slim.conv2d(s, 256, [3,3], stride=1, scope='C%d/fusion'%c,
           trainable=is_training, weights_initializer=initializer)
         self._layers['P%d'%c] = s
+        print("Pyramid stage P{} has the shape of {}".format(c, s.get_shape()))
 
     assert len(self._layers) == len(self._input_layers)
     return self._layers
@@ -97,18 +98,12 @@ class FeaturePyramidNetwork():
       initializer_bbox = tf.random_normal_initializer(mean=0.0, stddev=0.001)
     return initializer, initializer_bbox
 
-  def merge_outputs(self):
-    for output_name in self._output_name_list:
-      if output_name not in self._merge_outputs:
-        self.merge_output_for(output_name, axis=1)
+  def merger(self, name_list, stage_outputs, merge_outputs):
+    for name in name_list:
+      self.merger_for(satage_outputs[name], merge_outputs[name],
+        axis=name_list[name])
+    return merge_outputs
 
-  def merge_output_for(self, output_name, axis=1):
-    if output_name in self._merge_outputs:
-      print('{} is already merged!'.format(output_name))
-      raise NotImplementedError
-
-    outputs = [self._stage_outputs[stage_name][output_name] \
-      for stage_name in self._stage_outputs]
-    outputs = tf.concat(values=outputs, axis=axis)
-    self._merge_outputs[output_name] = outputs
-    return outputs
+  def merger_for(self, stage_outputs, merge_outputs, axis=1):
+    merge_outputs = tf.concat(values=stage_outputs.values(), axis=axis)
+    return merge_outputs

@@ -6,12 +6,21 @@ class RPN_FPN(FeaturePyramidNetwork):
 
   def __init__(self, base_net, name='rpn_fpn'):
     FeaturePyramidNetwork.__init__(self, base_net, name)
-    self._output_name_list = \
-      ["rpn_cls_score", 'rpn_cls_score_reshape', 'rpn_cls_prob',
-        'rpn_cls_pred', 'rpn_bbox_pred', 'rpn_bbox_pred', 'rois']
-    self._proposal_targets_list = \
-      ['rois', 'labels', 'bbox_targets', 'bbox_inside_weights',
-       'bbox_outside_weights']
+
+    self._output_name_list= {}
+    self._output_name_list['predictions'] = \
+      {"rpn_cls_score": 1, 'rpn_cls_score_reshape': 1, 'rpn_cls_prob': 1,
+        'rpn_cls_pred': 0, 'rpn_bbox_pred': 1, 'rpn_bbox_pred': 1, 'rois': 0}
+    self._output_name_list['proposal_targets'] = \
+      {'rois': 0, 'labels': 0, 'bbox_targets': 0, 'bbox_inside_weights': 0,
+       'bbox_outside_weights': 0}
+    self._output_name_list['anchor_targets'] = \
+      {'rpn_labels': 0, 'rpn_bbox_targets': 0,
+       'rpn_bbox_inside_weights': 0, 'rpn_bbox_outside_weights': 0}
+    for name in self._output_name_list:
+      self._stage_outputs[name] = \
+        dict((n, {}) for n in self._output_name_list[name])
+
     self._net_map = {
                   #  'C1':'resnet_v1_50/conv1/Relu:0',
                    'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
@@ -19,6 +28,7 @@ class RPN_FPN(FeaturePyramidNetwork):
                    'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
                    'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
       }
+
     self._net_begin = 2
 
   def build_rpn_head(self, base_layer):
@@ -65,18 +75,20 @@ class RPN_FPN(FeaturePyramidNetwork):
         rois, _ = base_net._proposal_layer(rpn_cls_prob, rpn_bbox_pred, "rois")
       else:
         raise NotImplementedError
-    output = {}
-    output["rpn_cls_score"] = rpn_cls_score_raw
-    output["rpn_cls_score_reshape"] = rpn_cls_score_reshape
-    output["rpn_cls_prob"] = rpn_cls_prob_reshape
-    output["rpn_cls_pred"] = rpn_cls_pred
-    output["rpn_bbox_pred"] = rpn_bbox_pred
-    output["rois"] = rois
+    predictions = {}
+    predictions["rpn_cls_score"] = rpn_cls_score_raw
+    predictions["rpn_cls_score_reshape"] = rpn_cls_score_reshape
+    predictions["rpn_cls_prob"] = rpn_cls_prob_reshape
+    predictions["rpn_cls_pred"] = rpn_cls_pred
+    predictions["rpn_bbox_pred"] = rpn_bbox_pred
+    predictions["rois"] = rois
 
-    for name in self._proposal_targets_list:
-      output['pt_{}'.format(name)] = base_net._proposal_targets[name]
+    proposal_targets = base_net._proposal_targets
+    anchor_targets = base_net._anchor_targets
+    outputs = {'predictions': predictions, 'proposal_targets': proposal_targets,
+      'anchor_targets': anchor_targets}
 
-    return rois, output
+    return rois, outputs
 
 
   def build_heads(self):
@@ -85,23 +97,30 @@ class RPN_FPN(FeaturePyramidNetwork):
       for layer_key in self._layers:
         layer = self._layers[layer_key]
         with tf.variable_scope(layer_key):
-          head, output = self.build_rpn_head(layer)
+          head, outputs = self.build_rpn_head(layer)
           self._heads[layer_key] = head
-          self._stage_outputs[layer_key] = output
-
-  def build_net(self):
-    merge_output = FeaturePyramidNetwork.build_net(self)
-    self.merge_proposal_targets_layer()
-    return merge_output
+          for output_group in outputs:
+            for output_name in outputs[output_group]:
+              self._stage_outputs[output_group][output_name][layer_key] = \
+                outputs[output_group][output_name]
 
   def merge_outputs(self):
-    self.merge_output_for('rois', axis=0)
-    self.merge_output_for('rpn_cls_pred', axis=0)
-    FeaturePyramidNetwork.merge_outputs(self)
+    base_net = self._base_net
+    for output_group in self._output_name_list:
+      self.merger(
+        self._output_name_list[output_group],
+        self._stage_outputs[output_group],
+        self._merge_outputs[output_group]
+      )
+    base_net._anchor_targets = self._merge_outputs['anchor_targets']
+    base_net._proposal_targets = self._merge_outputs['proposal_targets']
+    base_net._predictions = self._merge_outputs['predictions']
+    base_net._score_summaries.update(base_net._proposal_targets)
+    base_net._score_summaries.update(base_net._predictions)
 
-  def merge_proposal_targets_layer(self):
-    for output_name in self._proposal_targets_list:
-      if 'pt_'+output_name not in self._merge_outputs:
-        output = self.merge_output_for('pt_'+output_name, axis=0)
-        self._base_net._proposal_targets[output_name] = output
-        print('shape of {} is {}'.format(output_name, output.get_shape()))
+  # def merge_proposal_targets_layer(self):
+  #   for output_name in self._proposal_targets_list:
+  #     if 'pt_'+output_name not in self._merge_outputs:
+  #       output = self.merge_output_for('pt_'+output_name, axis=0)
+  #       self._base_net._proposal_targets[output_name] = output
+  #       print('shape of {} is {}'.format(output_name, output.get_shape()))
