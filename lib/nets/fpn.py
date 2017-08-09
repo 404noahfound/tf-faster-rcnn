@@ -100,7 +100,13 @@ class FeaturePyramidNetwork():
 
   def merger(self, name_list, stage_outputs, merge_outputs):
     for name in name_list:
-      merge_outputs[name] = self.merger_for(stage_outputs[name], name_list[name])
+      try:
+        merge_outputs[name] = self.merger_for(stage_outputs[name], name_list[name])
+      except InvalidArgumentError:
+        print('invalid argument for {}'.format(name))
+        print(stage_outputs[name])
+        raise InvalidArgumentError
+
     return merge_outputs
 
   def merger_for(self, stage_outputs, axis):
