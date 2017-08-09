@@ -250,11 +250,11 @@ class Network(object):
 
     # RCNN, class loss
     cls_score = self._predictions["cls_score"]
-    label = tf.reshape(self._proposal_targets["labels"], [rpn_num])
+    label = tf.reshape(self._proposal_targets["labels"], [-1])
 
     cross_entropy = tf.reduce_mean(
       tf.nn.sparse_softmax_cross_entropy_with_logits(
-        logits=tf.reshape(cls_score, [rpn_num, self._num_classes]), labels=label))
+        logits=tf.reshape(cls_score, [-1, self._num_classes]), labels=label))
 
     # RCNN, bbox loss
     bbox_pred = self._predictions['bbox_pred']
