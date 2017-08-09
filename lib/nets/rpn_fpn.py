@@ -9,7 +9,7 @@ class RPN_FPN(FeaturePyramidNetwork):
 
     self._output_name_list= {}
     self._output_name_list['predictions'] = \
-      {"rpn_cls_score": 1, 'rpn_cls_score_reshape': 1, 'rpn_cls_prob': 1,
+      {"rpn_cls_score": -1, 'rpn_cls_score_reshape': -1, 'rpn_cls_prob': -1,
         'rpn_cls_pred': 0, 'rpn_bbox_pred': -1, 'rois': 0}
     self._output_name_list['proposal_targets'] = \
       {'rois': 0, 'labels': 0, 'bbox_targets': 0, 'bbox_inside_weights': 0,
@@ -127,7 +127,7 @@ class RPN_FPN(FeaturePyramidNetwork):
   def get_rpn_loss_box(self, sigma_rpn):
     rpn_loss_box = {}
     for stage in self._stage_list:
-      with tf.variable_scope('losses/' + stage):
+      with tf.variable_scope('loss/' + stage):
         rpn_bbox_pred = \
           self._stage_outputs['predictions']['rpn_bbox_pred'][stage]
         rpn_bbox_targets = \
@@ -142,3 +142,22 @@ class RPN_FPN(FeaturePyramidNetwork):
     rpn_loss_box_merged = tf.stack(rpn_loss_box.values())
     rpn_loss_box_merged = tf.reduce_mean(rpn_loss_box_merged, 0)
     return rpn_loss_box_merged
+
+  def get_rpn_cross_entropy(self):
+    rpn_cross_entropy = {}
+    for stage in self._stage_list:
+      with tf.variable_scope('loss/'+stage) as scope:
+        rpn_cls_score = tf.reshape(
+          self._stage_outputs['predictions']['rpn_cls_score_reshape'][stage],
+          [-1, 2])
+        rpn_label = \
+          tf.reshape(self._stage_outputs["anchor_targets"]['rpn_labels'], [-1])
+        rpn_select = tf.where(tf.not_equal(rpn_label, -1))
+        rpn_cls_score = tf.reshape(tf.gather(rpn_cls_score, rpn_select), [-1, 2])
+        rpn_label = tf.reshape(tf.gather(rpn_label, rpn_select), [-1])
+        rpn_cross_entropy[stage] = tf.reduce_mean(
+          tf.nn.sparse_softmax_cross_entropy_with_logits(
+            logits=rpn_cls_score, labels=rpn_label))
+    rpn_cross_entropy_merged = tf.stack(rpn_cross_entropy.values())
+    rpn_cross_entropy_merged = tf.reduce_mean(rpn_loss_box_merged, 0)
+    return rpn_cross_entropy_merged
