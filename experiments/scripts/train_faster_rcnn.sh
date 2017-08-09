@@ -8,10 +8,11 @@ export PYTHONUNBUFFERED="True"
 GPU_ID=$1
 DATASET=$2
 NET=$3
+CFG=$4
 
 array=( $@ )
 len=${#array[@]}
-EXTRA_ARGS=${array[@]:3:$len}
+EXTRA_ARGS=${array[@]:4:$len}
 EXTRA_ARGS_SLUG=${EXTRA_ARGS// /_}
 
 case ${DATASET} in
@@ -72,7 +73,7 @@ if [ ! -f ${NET_FINAL}.index ]; then
             --imdb ${TRAIN_IMDB} \
             --imdbval ${TEST_IMDB} \
             --iters ${ITERS} \
-            --cfg experiments/cfgs/${NET}.yml \
+            --cfg experiments/cfgs/${CFG}.yml \
             --tag ${EXTRA_ARGS_SLUG} \
             --net ${NET} \
             --set ANCHOR_SCALES ${ANCHORS} ANCHOR_RATIOS ${RATIOS} TRAIN.STEPSIZE ${STEPSIZE} ${EXTRA_ARGS}
@@ -82,10 +83,11 @@ if [ ! -f ${NET_FINAL}.index ]; then
             --imdb ${TRAIN_IMDB} \
             --imdbval ${TEST_IMDB} \
             --iters ${ITERS} \
-            --cfg experiments/cfgs/${NET}.yml \
+            --cfg experiments/cfgs/${CFG}.yml \
             --net ${NET} \
             --set ANCHOR_SCALES ${ANCHORS} ANCHOR_RATIOS ${RATIOS} TRAIN.STEPSIZE ${STEPSIZE} ${EXTRA_ARGS}
     fi
 fi
 
+mv ${LOG} ${LOG}.done
 ./experiments/scripts/test_faster_rcnn.sh $@
