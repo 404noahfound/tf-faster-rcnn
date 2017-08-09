@@ -131,7 +131,7 @@ class RPN_FPN(FeaturePyramidNetwork):
         rpn_bbox_pred = \
           self._stage_outputs['predictions']['rpn_bbox_pred'][stage]
         rpn_bbox_targets = \
-          self.["anchor_targets"]['rpn_bbox_targets'][stage]
+          self._stage_outputs["anchor_targets"]['rpn_bbox_targets'][stage]
         rpn_bbox_inside_weights = \
           self._stage_outputs["anchor_targets"]['rpn_bbox_inside_weights'][stage]
         rpn_bbox_outside_weights = \
