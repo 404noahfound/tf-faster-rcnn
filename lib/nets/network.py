@@ -161,7 +161,7 @@ class Network(object):
       self._anchor_targets['rpn_bbox_inside_weights'] = rpn_bbox_inside_weights
       self._anchor_targets['rpn_bbox_outside_weights'] = rpn_bbox_outside_weights
 
-      for name in self._anchor_target_layer:
+      for name in self._anchor_targets:
         print('shape of {} is {}'.format(name, self._anchor_target_layer[name]))
       exit()
       self._score_summaries.update(self._anchor_targets)
