@@ -35,10 +35,11 @@ class FeaturePyramidNetwork():
     self._net_begin = None
 
   def build_net(self):
-    self._load_input_layers()
-    self.build_pyramid()
-    self.build_heads()
-    self.merge_outputs()
+    with tf.variable_scope(self._name):
+      self._load_input_layers()
+      self.build_pyramid()
+      self.build_heads()
+      self.merge_outputs()
     return self._merge_outputs
 
   def _load_input_layers(self):

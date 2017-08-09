@@ -124,26 +124,21 @@ class RPN_FPN(FeaturePyramidNetwork):
     base_net._score_summaries.update(base_net._predictions)
     return self._merge_outputs
 
-  # def get_stage_output(self):
-  #   predictions = \
-  #     dict((output_name, self._predictions[output_name][stage]) \
-  #     for output_name in self._predictions)
-  #   proposal_targets = \
-  #     dict((output_name, self._proposal_targets[output_name][stage]) \
-  #     for output_name in self._proposal_targets)
-
-
-  # def _add_losses(self, sigma_rpn=3.0):
-  #   for stage in self._stage_list:
-  #     with tf.variable_scope('loss_' + stage) as scope:
-  #     # RPN, class loss
-  #     rpn_num = cfg.TRAIN.RPN_BATCHSIZE
-  #     rpn_cls_score = tf.reshape(self._predictions['rpn_cls_score_reshape'], [rpn_num, 2])
-  #     rpn_label = tf.reshape(self._anchor_targets['rpn_labels'], [rpn_num])
-  #     rpn_select = tf.where(tf.not_equal(rpn_label, -1))
-  #     rpn_cls_score = tf.reshape(tf.gather(rpn_cls_score, rpn_select), [rpn_num, 2])
-  #     rpn_label = tf.reshape(tf.gather(rpn_label, rpn_select), [rpn_num])
-  #     rpn_cross_entropy = tf.reduce_mean(
-  #       tf.nn.sparse_softmax_cross_entropy_with_logits(logits=rpn_cls_score, labels=rpn_label))
-  #
-  #     # RPN, bbox loss
+  def get_rpn_loss_box(self):
+    rpn_loss_box = {}
+    for stage in self._stage_list:
+      with tf.variable_scope('losses/' + stage):
+        rpn_bbox_pred = \
+          self._stage_outputs['predictions']['rpn_bbox_pred'][stage]
+        rpn_bbox_targets = \
+          self.["anchor_targets"]['rpn_bbox_targets'][stage]
+        rpn_bbox_inside_weights = \
+          self._stage_outputs["anchor_targets"]['rpn_bbox_inside_weights'][stage]
+        rpn_bbox_outside_weights = \
+          self._stage_outputs["anchor_targets"]['rpn_bbox_outside_weights'][stage]
+        rpn_loss_box[stage] = self._smooth_l1_loss(rpn_bbox_pred,
+          rpn_bbox_targets, rpn_bbox_inside_weights, rpn_bbox_outside_weights,
+          sigma=sigma_rpn, dim=[1, 2, 3])
+    rpn_loss_box_merged = tf.stack(rpn_loss_box.values())
+    rpn_loss_box_merged = tf.reduce_mean(rpn_loss_box_merged, 0)
+    return rpn_loss_box_merged

@@ -154,6 +154,7 @@ class resnetv1(Network):
     if cfg.USE_RPN_FPN:
       fpn = RPN_FPN(self)
       outputs = fpn.build_net()
+      self._rpn_fpn = fpn
       return self._predictions['rois']
     is_training = self._is_training
     net_conv = self._layers['head']
