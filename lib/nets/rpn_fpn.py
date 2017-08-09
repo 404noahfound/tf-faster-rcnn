@@ -107,6 +107,7 @@ class RPN_FPN(FeaturePyramidNetwork):
   def merge_outputs(self):
     base_net = self._base_net
     for output_group in self._output_name_list:
+      self._merge_outputs[output_group] = {}
       self.merger(
         self._output_name_list[output_group],
         self._stage_outputs[output_group],
