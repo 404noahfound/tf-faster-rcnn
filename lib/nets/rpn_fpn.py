@@ -150,8 +150,8 @@ class RPN_FPN(FeaturePyramidNetwork):
         rpn_cls_score = tf.reshape(
           self._stage_outputs['predictions']['rpn_cls_score_reshape'][stage],
           [-1, 2])
-        rpn_label = \
-          tf.reshape(self._stage_outputs["anchor_targets"]['rpn_labels'], [-1])
+        rpn_label = tf.reshape(
+          self._stage_outputs["anchor_targets"]['rpn_labels'][stage], [-1])
         rpn_select = tf.where(tf.not_equal(rpn_label, -1))
         rpn_cls_score = tf.reshape(tf.gather(rpn_cls_score, rpn_select), [-1, 2])
         rpn_label = tf.reshape(tf.gather(rpn_label, rpn_select), [-1])
