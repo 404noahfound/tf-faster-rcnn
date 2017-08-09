@@ -10,7 +10,7 @@ class RPN_FPN(FeaturePyramidNetwork):
     self._output_name_list= {}
     self._output_name_list['predictions'] = \
       {"rpn_cls_score": 1, 'rpn_cls_score_reshape': 1, 'rpn_cls_prob': 1,
-        'rpn_cls_pred': 0, 'rpn_bbox_pred': 1, 'rpn_bbox_pred': 1, 'rois': 0}
+        'rpn_cls_pred': 0, 'rpn_bbox_pred': -1, 'rois': 0}
     self._output_name_list['proposal_targets'] = \
       {'rois': 0, 'labels': 0, 'bbox_targets': 0, 'bbox_inside_weights': 0,
        'bbox_outside_weights': 0}
@@ -111,7 +111,7 @@ class RPN_FPN(FeaturePyramidNetwork):
     base_net = self._base_net
 
     for output_group in self._output_name_list:
-      with tf.variable_scope('output/'+output_group):
+      with tf.variable_scope('outputs/'+output_group):
         self.merger(
           self._output_name_list[output_group],
           self._stage_outputs[output_group],

@@ -72,7 +72,6 @@ class FeaturePyramidNetwork():
         s = slim.conv2d(s, 256, [3,3], stride=1, scope='C%d/fusion'%c,
           trainable=is_training, weights_initializer=initializer)
         self._layers['P%d'%c] = s
-        print("Pyramid stage P{} has the shape of {}".format(c, s.get_shape()))
 
     assert len(self._layers) == len(self._input_layers)
     return self._layers
@@ -113,7 +112,8 @@ class FeaturePyramidNetwork():
       # if not is_same_shape(stage_outputs[name]):
       #   print('shape of {} is not equal'.format(name))
       #   raise Error
-      merge_outputs[name] = self.merger_for(name, stage_outputs[name], name_list[name])
+      if name_list[name] != -1:
+        merge_outputs[name] = self.merger_for(name, stage_outputs[name], name_list[name])
 
 
     return merge_outputs
