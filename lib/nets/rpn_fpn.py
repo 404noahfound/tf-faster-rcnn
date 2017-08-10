@@ -24,19 +24,12 @@ class RPN_FPN(FeaturePyramidNetwork):
       self._merge_outputs[name] = \
         dict((n, None) for n in self._output_name_list[name])
 
-    # self._net_map = {
-    #               #  'C1':'resnet_v1_50/conv1/Relu:0',
-    #                'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
-    #                'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
-    #                'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
-    #               #  'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
-    #   }
     self._net_map = {
                   #  'C1':'resnet_v1_50/conv1/Relu:0',
-                   'C2':'resnet_v1_50/block1',
-                   'C3':'resnet_v1_50/block2',
-                   'C4':'resnet_v1_50/block3',
-                  #  'C5':'resnet_v1_50/block4',
+                   'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
+                   'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
+                   'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
+                   'C5':'resnet_v1_50/block4/unit_2/bottleneck_v1',
       }
     # self._stage_list = ['P2', 'P3', 'P4', 'P5']
     self._stage_list = ['P2', 'P3', 'P4']
