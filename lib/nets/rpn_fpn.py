@@ -32,7 +32,7 @@ class RPN_FPN(FeaturePyramidNetwork):
       }
     # self._stage_list = ['P2', 'P3', 'P4', 'P5']
     self._stage_list = ['P5']
-    self._net_begin = 2
+    self._net_begin = 5
 
   def build_rpn_head(self, base_layer):
     base_net = self._base_net
