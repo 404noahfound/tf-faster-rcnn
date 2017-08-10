@@ -36,6 +36,7 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
   print('scores shape:{}'.format(scores.shape))
   proposals = bbox_transform_inv(anchors, rpn_bbox_pred)
   proposals = clip_boxes(proposals, im_info[:2])
+  print('proposals shape:{}'.format(proposals.shape))
   # print('point1')
 
   # Pick the top region proposals
