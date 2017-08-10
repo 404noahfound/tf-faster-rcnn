@@ -95,17 +95,15 @@ class RPN_FPN(FeaturePyramidNetwork):
 
 
   def build_heads(self):
-    scope = self._name + '/RPN_FPN'
-    with tf.variable_scope(scope):
-      for layer_key in self._stage_list:
-        layer = self._layers[layer_key]
-        with tf.variable_scope(layer_key):
-          head, outputs = self.build_rpn_head(layer)
-          self._heads[layer_key] = head
-          for output_group in outputs:
-            for output_name in outputs[output_group]:
-              self._stage_outputs[output_group][output_name][layer_key] = \
-                outputs[output_group][output_name]
+    for layer_key in self._stage_list:
+      layer = self._layers[layer_key]
+      with tf.variable_scope(layer_key):
+        head, outputs = self.build_rpn_head(layer)
+        self._heads[layer_key] = head
+        for output_group in outputs:
+          for output_name in outputs[output_group]:
+            self._stage_outputs[output_group][output_name][layer_key] = \
+              outputs[output_group][output_name]
 
   def merge_outputs(self):
     base_net = self._base_net
