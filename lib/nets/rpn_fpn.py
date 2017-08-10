@@ -65,7 +65,7 @@ class RPN_FPN(FeaturePyramidNetwork):
     if is_training:
       rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
         rpn_bbox_pred, "rois_"+layer_name)
-
+      print("{} rpn_cls_score_raw {}".format(layer_name, rpn_cls_score_raw.shape))
       rpn_labels = base_net._anchor_target_layer(rpn_cls_score_raw, "anchor_"+layer_name)
       # Try to have a deterministic order for the computing graph,
       # for reproducibility
