@@ -41,7 +41,7 @@ class RPN_FPN(FeaturePyramidNetwork):
     is_training = self._is_training
     net_conv = base_layer
     num_anchors = base_net._num_anchors
-    self._anchor_component()
+    self._anchor_component(layer_name)
 
 
     rpn = slim.conv2d(net_conv, 256, [3,3], trainable=is_training,
@@ -161,5 +161,6 @@ class RPN_FPN(FeaturePyramidNetwork):
     rpn_cross_entropy_merged = tf.reduce_mean(rpn_cross_entropy_merged, 0)
     return rpn_cross_entropy_merged
 
-  def _anchor_component(self, layer_num):
+  def _anchor_component(self, layer_name):
+    layer_num = int(layer_name[1:])
     self._base_net._anchor_component(5 - layer_num)
