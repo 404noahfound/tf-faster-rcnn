@@ -4,8 +4,8 @@ from nets.fpn import FeaturePyramidNetwork
 
 class RPN_FPN(FeaturePyramidNetwork):
 
-  def __init__(self, base_net, name='rpn_fpn'):
-    FeaturePyramidNetwork.__init__(self, base_net, name)
+  def __init__(self, base_net, is_training, name='rpn_fpn'):
+    FeaturePyramidNetwork.__init__(self, base_net, is_training, name)
 
     self._output_name_list= {}
     self._output_name_list['predictions'] = \
@@ -62,13 +62,8 @@ class RPN_FPN(FeaturePyramidNetwork):
                                  padding='VALID', activation_fn=None,
                                  scope='rpn_bbox_pred')
     if is_training:
-      try:
-        rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
-          rpn_bbox_pred, "rois")
-      except:
-        print("shape of rpn_cls_prob is {}".format(rpn_cls_prob_reshape.get_shape()))
-        print("shape of rpn_bbox_pred is {}".format(rpn_bbox_pred.get_shape()))
-        exit()
+      rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
+        rpn_bbox_pred, "rois")
 
       # TODO: figure out what this part is doing
       rpn_labels = base_net._anchor_target_layer(rpn_cls_score_raw, "anchor")
@@ -102,7 +97,7 @@ class RPN_FPN(FeaturePyramidNetwork):
   def build_heads(self):
     scope = self._name + '/RPN_FPN'
     with tf.variable_scope(scope):
-      for layer_key in self._layers:
+      for layer_key in self._stage_list:
         layer = self._layers[layer_key]
         with tf.variable_scope(layer_key):
           head, outputs = self.build_rpn_head(layer)
