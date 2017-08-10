@@ -227,15 +227,9 @@ class resnetv1(Network):
                                    include_root_block=False,
                                    scope=self._resnet_scope + '_res_conv')
 
-      # this line is only for test, delete it!
-      print('shape of pool5: {}'.format(pool5.get_shape()))
-    #   fc7 = slim.fully_connected(pool5, 1024)
-      print('shape of fc7: {}'.format(fc7.get_shape()))
-
     with tf.variable_scope(self._resnet_scope, self._resnet_scope):
       # Average pooling done by reduce_mean
       fc7 = tf.reduce_mean(fc7, axis=[1, 2])
-      print('shape of fc7: {}'.format(fc7.get_shape()))
       cls_score = slim.fully_connected(fc7, self._num_classes, weights_initializer=initializer,
                                        trainable=is_training, activation_fn=None, scope='cls_score')
       cls_pred = tf.argmax(cls_score, axis=1, name="cls_pred")
