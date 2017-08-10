@@ -33,10 +33,10 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
   scores = rpn_cls_prob[:, :, :, num_anchors:]
   rpn_bbox_pred = rpn_bbox_pred.reshape((-1, 4))
   scores = scores.reshape((-1, 1))
-  print('scores shape:{}'.format(scores.shape))
+  # print('scores shape:{}'.format(scores.shape))
   proposals = bbox_transform_inv(anchors, rpn_bbox_pred)
   proposals = clip_boxes(proposals, im_info[:2])
-  print('proposals shape:{}'.format(proposals.shape))
+  # print('proposals shape:{}'.format(proposals.shape))
   # print('point1')
 
   # Pick the top region proposals
@@ -45,11 +45,11 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
     order = order[:pre_nms_topN]
   proposals = proposals[order, :]
   scores = scores[order]
-  print('proposals after pick shape:{}'.format(proposals.shape))
+  # print('proposals after pick shape:{}'.format(proposals.shape))
 
   # Non-maximal suppression
   keep = nms(np.hstack((proposals, scores)), nms_thresh)
-  print('keep shape:{}'.format(keep.shape))
+  # print('keep shape:{}'.format(keep.shape))
 
   # Pick th top region proposals after NMS
   if post_nms_topN > 0:
@@ -61,4 +61,6 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
   batch_inds = np.zeros((proposals.shape[0], 1), dtype=np.float32)
   blob = np.hstack((batch_inds, proposals.astype(np.float32, copy=False)))
 
+  print('blob shape:{}'.format(blob.shape))
+  print('scores shape:{}'.format(scores.shape))
   return blob, scores
