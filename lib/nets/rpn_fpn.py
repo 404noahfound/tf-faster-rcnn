@@ -25,12 +25,13 @@ class RPN_FPN(FeaturePyramidNetwork):
 
     self._net_map = {
                   #  'C1':'resnet_v1_50/conv1/Relu:0',
-                   'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
-                   'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
-                   'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
+                  #  'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
+                  #  'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
+                  #  'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
                    'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
       }
-    self._stage_list = ['P2', 'P3', 'P4', 'P5']
+    # self._stage_list = ['P2', 'P3', 'P4', 'P5']
+    self._stage_list = ['P5']
     self._net_begin = 2
 
   def build_rpn_head(self, base_layer):
