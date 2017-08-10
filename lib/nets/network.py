@@ -148,7 +148,7 @@ class Network(object):
       rpn_labels, rpn_bbox_targets, rpn_bbox_inside_weights, rpn_bbox_outside_weights = tf.py_func(
         anchor_target_layer,
         [rpn_cls_score, self._gt_boxes, self._im_info, self._feat_stride, self._anchors, self._num_anchors],
-        [tf.float32, tf.float32, tf.float32, tf.float32])
+        [tf.float32, tf.float32, tf.float32, tf.float32], name=name)
 
       rpn_labels.set_shape([1, 1, None, None])
       rpn_bbox_targets.set_shape([1, None, None, self._num_anchors * 4])

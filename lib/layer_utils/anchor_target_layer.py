@@ -26,8 +26,7 @@ def anchor_target_layer(rpn_cls_score, gt_boxes, im_info, _feat_stride, all_anch
   _allowed_border = 0
 
   # map of shape (..., H, W)
-  print('shape rpn_cls_score {}'.format(rpn_cls_score.shape))
-  print('shape gt_boxes {}'.format(gt_boxes.shape))
+  print('rpn_cls_score {} gt_boxes {}'.format(rpn_cls_score.shape, gt_boxes.shape))
 
   height, width = rpn_cls_score.shape[1:3]
 
