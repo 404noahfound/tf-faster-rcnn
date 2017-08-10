@@ -191,11 +191,12 @@ class Network(object):
 
       return rois, roi_scores
 
-  def _anchor_component(self):
+  def _anchor_component(self, ratio = 0):
     with tf.variable_scope('ANCHOR_' + self._tag) as scope:
       # just to get the shape right
-      height = tf.to_int32(tf.ceil(self._im_info[0, 0] / np.float32(self._feat_stride[0])))
-      width = tf.to_int32(tf.ceil(self._im_info[0, 1] / np.float32(self._feat_stride[0])))
+      ratio = 2 ** ratio
+      height = tf.to_int32(tf.ceil(self._im_info[0, 0] / np.float32(self._feat_stride[0]) * ratio))
+      width = tf.to_int32(tf.ceil(self._im_info[0, 1] / np.float32(self._feat_stride[0]) * ratio))
       anchors, anchor_length = tf.py_func(generate_anchors_pre,
                                           [height, width,
                                            self._feat_stride, self._anchor_scales, self._anchor_ratios],
