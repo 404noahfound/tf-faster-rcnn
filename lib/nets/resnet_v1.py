@@ -138,8 +138,6 @@ class resnetv1(Network):
                                            global_pool=False,
                                            include_root_block=False,
                                            scope=self._resnet_scope)
-        for name in end_points:
-          print(name)
     self._act_summaries.append(net_conv)
     return net_conv, end_points
 
