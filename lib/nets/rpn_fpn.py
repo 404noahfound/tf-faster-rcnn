@@ -25,14 +25,13 @@ class RPN_FPN(FeaturePyramidNetwork):
 
     self._net_map = {
                   #  'C1':'resnet_v1_50/conv1/Relu:0',
-                  #  'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
-                  #  'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
-                  #  'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
+                   'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
+                   'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
+                   'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
                    'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
       }
-    # self._stage_list = ['P2', 'P3', 'P4', 'P5']
-    self._stage_list = ['P5']
-    self._net_begin = 5
+    self._stage_list = ['P2', 'P3', 'P4', 'P5']
+    self._net_begin = 2
 
   def build_rpn_head(self, base_layer):
     base_net = self._base_net
@@ -63,7 +62,7 @@ class RPN_FPN(FeaturePyramidNetwork):
                                  padding='VALID', activation_fn=None,
                                  scope='rpn_bbox_pred')
     if is_training:
-      rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
+      rois, roi_scores = self._proposal_layer(rpn_cls_prob_reshape,
         rpn_bbox_pred, "rois")
 
       # TODO: figure out what this part is doing
@@ -160,3 +159,15 @@ class RPN_FPN(FeaturePyramidNetwork):
     rpn_cross_entropy_merged = tf.stack(rpn_cross_entropy.values())
     rpn_cross_entropy_merged = tf.reduce_mean(rpn_cross_entropy_merged, 0)
     return rpn_cross_entropy_merged
+
+  def _proposal_layer(self, rpn_cls_prob, rpn_bbox_pred, name):
+    base_net = self._base_net
+    with tf.variable_scope(name) as scope:
+      rois, rpn_scores = tf.py_func(proposal_layer,
+                                    [rpn_cls_prob, rpn_bbox_pred, base_net._im_info, base_net._mode,
+                                     base_net._feat_stride, base_net._anchors, base_net._num_anchors],
+                                    [tf.float32, tf.float32])
+      rois.set_shape([None, 5])
+      rpn_scores.set_shape([None, 1])
+
+    return rois, rpn_scores
