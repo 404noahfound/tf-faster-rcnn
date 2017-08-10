@@ -31,9 +31,9 @@ class RPN_FPN(FeaturePyramidNetwork):
                    'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
                    'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
       }
-    self._stage_list = ['P3', 'P4', 'P5']
+    self._stage_list = ['P2', 'P3', 'P4', 'P5']
     # self._stage_list = ['P2', 'P3', 'P4']
-    self._net_begin = 3
+    self._net_begin = 2
 
   def build_rpn_head(self, base_layer, layer_name):
     base_net = self._base_net
