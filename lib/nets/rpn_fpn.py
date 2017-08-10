@@ -29,7 +29,7 @@ class RPN_FPN(FeaturePyramidNetwork):
                    'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
                    'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
                    'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
-                   'C5':'resnet_v1_50/block4/unit_2/bottleneck_v1',
+                   'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
       }
     self._stage_list = ['P2', 'P3', 'P4', 'P5']
     # self._stage_list = ['P2', 'P3', 'P4']
