@@ -27,6 +27,8 @@ def anchor_target_layer(rpn_cls_score, gt_boxes, im_info, _feat_stride, all_anch
 
   # map of shape (..., H, W)
   print('shape rpn_cls_score {}'.format(rpn_cls_score))
+  print('shape gt_boxes {}'.format(gt_boxes))
+
   height, width = rpn_cls_score.shape[1:3]
 
   # only keep anchors inside the image
