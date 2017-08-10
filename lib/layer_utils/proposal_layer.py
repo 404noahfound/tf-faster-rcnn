@@ -61,6 +61,4 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
   batch_inds = np.zeros((proposals.shape[0], 1), dtype=np.float32)
   blob = np.hstack((batch_inds, proposals.astype(np.float32, copy=False)))
 
-  print('blob shape:{}'.format(blob.shape))
-  print('scores shape:{}'.format(scores.shape))
   return blob, scores
