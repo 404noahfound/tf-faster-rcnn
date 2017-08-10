@@ -35,7 +35,8 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
   scores = scores.reshape((-1, 1))
   proposals = bbox_transform_inv(anchors, rpn_bbox_pred)
   proposals = clip_boxes(proposals, im_info[:2])
-  print('point1')
+  # print('point1')
+  print('proposals shape:'.format(proposals.shape))
 
   # Pick the top region proposals
   order = scores.ravel().argsort()[::-1]
@@ -43,7 +44,7 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
     order = order[:pre_nms_topN]
   proposals = proposals[order, :]
   scores = scores[order]
-  print('point2')
+  # print('point2')
 
   # Non-maximal suppression
   keep = nms(np.hstack((proposals, scores)), nms_thresh)
@@ -53,7 +54,7 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
     keep = keep[:post_nms_topN]
   proposals = proposals[keep, :]
   scores = scores[keep]
-  print('point3')
+  # print('point3')
   # Only support single image as input
   batch_inds = np.zeros((proposals.shape[0], 1), dtype=np.float32)
   blob = np.hstack((batch_inds, proposals.astype(np.float32, copy=False)))
