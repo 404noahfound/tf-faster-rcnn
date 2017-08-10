@@ -33,10 +33,10 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
   scores = rpn_cls_prob[:, :, :, num_anchors:]
   rpn_bbox_pred = rpn_bbox_pred.reshape((-1, 4))
   scores = scores.reshape((-1, 1))
+  print('scores shape:{}'.format(scores.shape))
   proposals = bbox_transform_inv(anchors, rpn_bbox_pred)
   proposals = clip_boxes(proposals, im_info[:2])
   # print('point1')
-  print('scores shape:'.format(scores.shape))
 
   # Pick the top region proposals
   order = scores.ravel().argsort()[::-1]
