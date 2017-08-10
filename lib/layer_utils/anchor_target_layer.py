@@ -27,6 +27,7 @@ def anchor_target_layer(rpn_cls_score, gt_boxes, im_info, _feat_stride, all_anch
 
   # map of shape (..., H, W)
   print('rpn_cls_score {} gt_boxes {}'.format(rpn_cls_score.shape, gt_boxes.shape))
+  print('all_anchors {}'.format(all_anchors.shape))
 
   height, width = rpn_cls_score.shape[1:3]
 
@@ -118,22 +119,26 @@ def anchor_target_layer(rpn_cls_score, gt_boxes, im_info, _feat_stride, all_anch
   bbox_outside_weights = _unmap(bbox_outside_weights, total_anchors, inds_inside, fill=0)
 
   # labels
+  print('labels: {}'.format(labels.shape))
   labels = labels.reshape((1, height, width, A)).transpose(0, 3, 1, 2)
   labels = labels.reshape((1, 1, A * height, width))
   rpn_labels = labels
 
   # bbox_targets
+  print('bbox_targets: {}'.format(bbox_targets.shape))
   bbox_targets = bbox_targets \
     .reshape((1, height, width, A * 4))
 
   rpn_bbox_targets = bbox_targets
   # bbox_inside_weights
+  print('bbox_inside_weights: {}'.format(bbox_inside_weights.shape))
   bbox_inside_weights = bbox_inside_weights \
     .reshape((1, height, width, A * 4))
 
   rpn_bbox_inside_weights = bbox_inside_weights
 
   # bbox_outside_weights
+  print('bbox_outside_weights: {}'.format(bbox_outside_weights.shape))
   bbox_outside_weights = bbox_outside_weights \
     .reshape((1, height, width, A * 4))
 
