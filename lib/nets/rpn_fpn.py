@@ -27,12 +27,12 @@ class RPN_FPN(FeaturePyramidNetwork):
     self._net_map = {
                   #  'C1':'resnet_v1_50/conv1/Relu:0',
                    'C2':'resnet_v1_50/block1/unit_2/bottleneck_v1',
-                  #  'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
-                  #  'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
-                  #  'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
+                   'C3':'resnet_v1_50/block2/unit_3/bottleneck_v1',
+                   'C4':'resnet_v1_50/block3/unit_5/bottleneck_v1',
+                   'C5':'resnet_v1_50/block4/unit_3/bottleneck_v1',
       }
-    # self._stage_list = ['P2', 'P3', 'P4', 'P5']
-    self._stage_list = ['P2']
+    self._stage_list = ['P2', 'P3', 'P4', 'P5']
+    # self._stage_list = ['P2']
     self._net_begin = 2
 
   def build_rpn_head(self, base_layer, layer_name):
@@ -65,17 +65,17 @@ class RPN_FPN(FeaturePyramidNetwork):
                                  scope='rpn_bbox_pred')
     if is_training:
       rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
-        rpn_bbox_pred, "rois_"+layer_name)
-      rpn_labels = base_net._anchor_target_layer(rpn_cls_score_raw, "anchor_"+layer_name)
+        rpn_bbox_pred, "rois")
+      rpn_labels = base_net._anchor_target_layer(rpn_cls_score_raw, "anchor")
       # Try to have a deterministic order for the computing graph,
       # for reproducibility
       with tf.control_dependencies([rpn_labels]):
-        rois, _ = base_net._proposal_target_layer(rois, roi_scores, "rpn_rois_"+layer_name)
+        rois, _ = base_net._proposal_target_layer(rois, roi_scores, "rpn_rois")
 
     else:
       if cfg.TEST.MODE == 'nms':
         rois, _ = base_net._proposal_layer(rpn_cls_prob, rpn_bbox_pred,
-          "rois_"+layer_name)
+          "rois")
       else:
         raise NotImplementedError
     predictions = {}
