@@ -170,4 +170,4 @@ class RPN_FPN(FeaturePyramidNetwork):
 
   def _anchor_component(self, layer_name):
     layer_num = int(layer_name[1:])
-    self._base_net._anchor_component(4 - layer_num)
+    self._base_net._anchor_component(max(0, 6-layer_num))
