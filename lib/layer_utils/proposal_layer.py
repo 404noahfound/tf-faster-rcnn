@@ -20,6 +20,7 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
 
   print('rpn_cls_prob shape:{}'.format(rpn_cls_prob.shape))
   print('rpn_bbox_pred shape:{}'.format(rpn_bbox_pred.shape))
+  print('num_anchors shape: {}'.format(num_anchors.shape))
   print('\n\n')
   if type(cfg_key) == bytes:
       cfg_key = cfg_key.decode('utf-8')
