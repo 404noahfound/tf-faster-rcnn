@@ -45,7 +45,7 @@ def proposal_layer(rpn_cls_prob, rpn_bbox_pred, im_info, cfg_key, _feat_stride, 
     order = order[:pre_nms_topN]
   proposals = proposals[order, :]
   scores = scores[order]
-  # print('point2')
+  print('proposals shape:{}'.format(proposals.shape))
 
   # Non-maximal suppression
   keep = nms(np.hstack((proposals, scores)), nms_thresh)
