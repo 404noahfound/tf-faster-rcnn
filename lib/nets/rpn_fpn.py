@@ -34,21 +34,21 @@ class RPN_FPN(FeaturePyramidNetwork):
     self._stage_list = ['P2', 'P3', 'P4', 'P5']
     self._net_begin = 2
 
-  def build_rpn_head(self, base_layer):
+  def build_rpn_head(self, base_layer, layer_name):
     base_net = self._base_net
     initializer, _ = self.set_initializers()
     is_training = self._is_training
     net_conv = base_layer
-    # TODO:implement anchor_component
     num_anchors = base_net._num_anchors
     base_net._anchor_component()
+
+
     rpn = slim.conv2d(net_conv, 256, [3,3], trainable=is_training,
       weights_initializer=initializer, scope="rpn_conv/3x3")
     base_net._act_summaries.append(rpn)
     rpn_cls_score_raw = slim.conv2d(rpn, num_anchors * 2, [1, 1],
       trainable=is_training, weights_initializer=initializer, padding='VALID',
       activation_fn=None, scope='rpn_cls_score_raw')
-    # TODO: implemnt reshape layer
     rpn_cls_score_reshape = base_net._reshape_layer(rpn_cls_score_raw, 2,
       'rpn_cls_score_reshape')
     rpn_cls_prob_raw = base_net._softmax_layer(rpn_cls_score_reshape,
@@ -63,10 +63,9 @@ class RPN_FPN(FeaturePyramidNetwork):
                                  padding='VALID', activation_fn=None,
                                  scope='rpn_bbox_pred')
     if is_training:
-      rois, roi_scores = self._proposal_layer(rpn_cls_prob_reshape,
+      rois, roi_scores = base_net._proposal_layer(rpn_cls_prob_reshape,
         rpn_bbox_pred, "rois")
 
-      # TODO: figure out what this part is doing
       rpn_labels = base_net._anchor_target_layer(rpn_cls_score_raw, "anchor")
       # Try to have a deterministic order for the computing graph,
       # for reproducibility
@@ -75,7 +74,8 @@ class RPN_FPN(FeaturePyramidNetwork):
 
     else:
       if cfg.TEST.MODE == 'nms':
-        rois, _ = base_net._proposal_layer(rpn_cls_prob, rpn_bbox_pred, "rois")
+        rois, _ = base_net._proposal_layer(rpn_cls_prob, rpn_bbox_pred,
+          "rois_"+layer_name)
       else:
         raise NotImplementedError
     predictions = {}
@@ -99,7 +99,7 @@ class RPN_FPN(FeaturePyramidNetwork):
     for layer_key in self._stage_list:
       layer = self._layers[layer_key]
       with tf.variable_scope(layer_key):
-        head, outputs = self.build_rpn_head(layer)
+        head, outputs = self.build_rpn_head(layer, layer_key)
         self._heads[layer_key] = head
         for output_group in outputs:
           for output_name in outputs[output_group]:
@@ -160,15 +160,3 @@ class RPN_FPN(FeaturePyramidNetwork):
     rpn_cross_entropy_merged = tf.stack(rpn_cross_entropy.values())
     rpn_cross_entropy_merged = tf.reduce_mean(rpn_cross_entropy_merged, 0)
     return rpn_cross_entropy_merged
-
-  def _proposal_layer(self, rpn_cls_prob, rpn_bbox_pred, name):
-    base_net = self._base_net
-    with tf.variable_scope(name) as scope:
-      rois, rpn_scores = tf.py_func(proposal_layer,
-                                    [rpn_cls_prob, rpn_bbox_pred, base_net._im_info, base_net._mode,
-                                     base_net._feat_stride, base_net._anchors, base_net._num_anchors],
-                                    [tf.float32, tf.float32])
-      rois.set_shape([None, 5])
-      rpn_scores.set_shape([None, 1])
-
-    return rois, rpn_scores
