@@ -70,7 +70,7 @@ class RPN_FPN(FeaturePyramidNetwork):
       # Try to have a deterministic order for the computing graph,
       # for reproducibility
       with tf.control_dependencies([rpn_labels]):
-        rois, _ = base_net._proposal_target_layer(rois, roi_scores, "rpn_rois")
+        rois, _ = base_net._proposal_target_layer(rois, roi_scores, "rpn_rois_"+layer_name)
 
     else:
       if cfg.TEST.MODE == 'nms':
