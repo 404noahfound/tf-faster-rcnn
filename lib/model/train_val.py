@@ -105,7 +105,7 @@ class SolverWrapper(object):
                                             anchor_ratios=cfg.ANCHOR_RATIOS)
       # Define the loss
       loss = layers['total_loss']
-      self._set_train_op()
+      self._set_train_op(loss)
       # We will handle the snapshots ourselves
       self.saver = tf.train.Saver(max_to_keep=100000)
       # Write the train and validation information to tensorboard
@@ -259,7 +259,7 @@ class SolverWrapper(object):
           os.remove(str(sfile_meta))
           ss_paths.remove(sfile)
 
-  def _set_train_op(self):
+  def _set_train_op(self, loss):
     # Set learning rate and momentum
     lr = tf.Variable(cfg.TRAIN.LEARNING_RATE, trainable=False)
     momentum = cfg.TRAIN.MOMENTUM
