@@ -128,7 +128,7 @@ class SolverWrapper(object):
         # Add snapshot here before reducing the learning rate
         self.snapshot(sess, iter)
         sess.run(tf.assign(lr, cfg.TRAIN.LEARNING_RATE * cfg.TRAIN.GAMMA))
-      self.train_step(sess, iter)
+      self.train_step(sess, iter, lr)
       iter += 1
 
     if self._last_snapshot_iter != iter - 1:
@@ -207,7 +207,7 @@ class SolverWrapper(object):
           sess.run(tf.assign(lr, cfg.TRAIN.LEARNING_RATE))
     return self._last_snapshot_iter
 
-  def train_step(self, sess, iter):
+  def train_step(self, sess, iter, lr):
     train_op = self._train_op
     timer = Timer()
     timer.tic()
