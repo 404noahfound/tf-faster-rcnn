@@ -112,7 +112,7 @@ class SolverWrapper(object):
       self.writer = tf.summary.FileWriter(self.tbdir, sess.graph)
       self.valwriter = tf.summary.FileWriter(self.tbvaldir)
 
-    self.load_ckpt()
+    self.load_ckpt(sess)
 
     timer = Timer()
     iter = last_snapshot_iter + 1
@@ -123,7 +123,7 @@ class SolverWrapper(object):
         # Add snapshot here before reducing the learning rate
         self.snapshot(sess, iter)
         sess.run(tf.assign(lr, cfg.TRAIN.LEARNING_RATE * cfg.TRAIN.GAMMA))
-      self.train_step(iter)
+      self.train_step(sess, iter)
       iter += 1
 
     if last_snapshot_iter != iter - 1:
@@ -132,7 +132,7 @@ class SolverWrapper(object):
     self.writer.close()
     self.valwriter.close()
 
-  def load_ckpt(self):
+  def load_ckpt(self, sess):
     # Find previous snapshots if there is any to restore from
     sfiles = os.path.join(self.output_dir, cfg.TRAIN.SNAPSHOT_PREFIX + '_iter_*.ckpt.meta')
     sfiles = glob.glob(sfiles)
@@ -201,7 +201,7 @@ class SolverWrapper(object):
         else:
           sess.run(tf.assign(lr, cfg.TRAIN.LEARNING_RATE))
 
-  def train_step(self, iter):
+  def train_step(self, sess, iter):
     train_op = self._train_op
     timer = Timer()
     timer.tic()
