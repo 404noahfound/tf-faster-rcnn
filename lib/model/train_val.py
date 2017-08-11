@@ -117,7 +117,7 @@ class SolverWrapper(object):
     self.load_ckpt(sess, lr)
 
     timer = Timer()
-    iter = last_snapshot_iter + 1
+    iter = self._last_snapshot_iter + 1
     last_summary_time = time.time()
     while iter < max_iters + 1:
       # Learning rate
@@ -128,7 +128,7 @@ class SolverWrapper(object):
       self.train_step(sess, iter)
       iter += 1
 
-    if last_snapshot_iter != iter - 1:
+    if self._last_snapshot_iter != iter - 1:
       self.snapshot(sess, iter - 1)
 
     self.writer.close()
@@ -174,7 +174,7 @@ class SolverWrapper(object):
       self.net.fix_variables(sess, self.pretrained_model)
       print('Fixed.')
       sess.run(tf.assign(lr, cfg.TRAIN.LEARNING_RATE))
-      last_snapshot_iter = 0
+      self._last_snapshot_iter = 0
     else:
       # Get the most recent snapshot and restore
       ss_paths = [ss_paths[-1]]
@@ -189,7 +189,7 @@ class SolverWrapper(object):
         perm = pickle.load(fid)
         cur_val = pickle.load(fid)
         perm_val = pickle.load(fid)
-        last_snapshot_iter = pickle.load(fid)
+        self._last_snapshot_iter = pickle.load(fid)
 
         np.random.set_state(st0)
         self.data_layer._cur = cur
@@ -198,10 +198,11 @@ class SolverWrapper(object):
         self.data_layer_val._perm = perm_val
 
         # Set the learning rate, only reduce once
-        if last_snapshot_iter > cfg.TRAIN.STEPSIZE:
+        if self._last_snapshot_iter > cfg.TRAIN.STEPSIZE:
           sess.run(tf.assign(lr, cfg.TRAIN.LEARNING_RATE * cfg.TRAIN.GAMMA))
         else:
           sess.run(tf.assign(lr, cfg.TRAIN.LEARNING_RATE))
+    return self._last_snapshot_iter
 
   def train_step(self, sess, iter):
     train_op = self._train_op
@@ -233,7 +234,7 @@ class SolverWrapper(object):
             (iter, max_iters, total_loss, rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, lr.eval()))
       print('speed: {:.3f}s / iter'.format(timer.average_time))
     if iter % cfg.TRAIN.SNAPSHOT_ITERS == 0:
-      last_snapshot_iter = iter
+      self._last_snapshot_iter = iter
       snapshot_path, np_path = self.snapshot(sess, iter)
       np_paths.append(np_path)
       ss_paths.append(snapshot_path)
