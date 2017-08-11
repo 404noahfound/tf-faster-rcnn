@@ -41,6 +41,7 @@ class SolverWrapper(object):
     if not os.path.exists(self.tbvaldir):
       os.makedirs(self.tbvaldir)
     self.pretrained_model = pretrained_model
+    self._max_iters = None
 
   def snapshot(self, sess, iter):
     net = self.net
@@ -91,6 +92,8 @@ class SolverWrapper(object):
               "with SNAPPY.")
 
   def train_model(self, sess, max_iters):
+    self._max_iters = max_iters
+
     # Build data layers for both training and validation set
     self.data_layer = RoIDataLayer(self.roidb, self.imdb.num_classes)
     self.data_layer_val = RoIDataLayer(self.valroidb, self.imdb.num_classes, random=True)
@@ -231,7 +234,7 @@ class SolverWrapper(object):
     if iter % (cfg.TRAIN.DISPLAY) == 0:
       print('iter: %d / %d, total loss: %.6f\n >>> rpn_loss_cls: %.6f\n '
             '>>> rpn_loss_box: %.6f\n >>> loss_cls: %.6f\n >>> loss_box: %.6f\n >>> lr: %f' % \
-            (iter, max_iters, total_loss, rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, lr.eval()))
+            (iter, self._max_iters, total_loss, rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, lr.eval()))
       print('speed: {:.3f}s / iter'.format(timer.average_time))
     if iter % cfg.TRAIN.SNAPSHOT_ITERS == 0:
       self._last_snapshot_iter = iter
