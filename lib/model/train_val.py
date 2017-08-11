@@ -103,16 +103,18 @@ class SolverWrapper(object):
       layers = self.net.create_architecture(sess, 'TRAIN', self.imdb.num_classes, tag='default',
                                             anchor_scales=cfg.ANCHOR_SCALES,
                                             anchor_ratios=cfg.ANCHOR_RATIOS)
+
+      lr = tf.Variable(cfg.TRAIN.LEARNING_RATE, trainable=False)
       # Define the loss
       loss = layers['total_loss']
-      self._set_train_op(loss)
+      self._set_train_op(lr, loss)
       # We will handle the snapshots ourselves
       self.saver = tf.train.Saver(max_to_keep=100000)
       # Write the train and validation information to tensorboard
       self.writer = tf.summary.FileWriter(self.tbdir, sess.graph)
       self.valwriter = tf.summary.FileWriter(self.tbvaldir)
 
-    self.load_ckpt(sess)
+    self.load_ckpt(sess, lr)
 
     timer = Timer()
     iter = last_snapshot_iter + 1
@@ -132,7 +134,7 @@ class SolverWrapper(object):
     self.writer.close()
     self.valwriter.close()
 
-  def load_ckpt(self, sess):
+  def load_ckpt(self, sess, lr):
     # Find previous snapshots if there is any to restore from
     sfiles = os.path.join(self.output_dir, cfg.TRAIN.SNAPSHOT_PREFIX + '_iter_*.ckpt.meta')
     sfiles = glob.glob(sfiles)
@@ -259,9 +261,8 @@ class SolverWrapper(object):
           os.remove(str(sfile_meta))
           ss_paths.remove(sfile)
 
-  def _set_train_op(self, loss):
+  def _set_train_op(self, lr, loss):
     # Set learning rate and momentum
-    lr = tf.Variable(cfg.TRAIN.LEARNING_RATE, trainable=False)
     momentum = cfg.TRAIN.MOMENTUM
     self.optimizer = tf.train.MomentumOptimizer(lr, momentum)
     # Compute the gradients with regard to the loss
