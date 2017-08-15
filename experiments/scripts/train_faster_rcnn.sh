@@ -99,6 +99,7 @@ if [ ! -f ${NET_FINAL}.index ]; then
             --weight data/imagenet_weights/${NET}.ckpt \
             --imdb ${TRAIN_IMDB} \
             --imdbval ${TEST_IMDB} \
+            --tag ${TAG}
             --iters ${ITERS} \
             --cfg experiments/cfgs/${CFG}.yml \
             --net ${NET} \
