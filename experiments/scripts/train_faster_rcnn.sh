@@ -57,7 +57,7 @@ case ${DATASET} in
     ANCHORS="[8]"
     RATIOS="[0.5,1,2]"
     ;;
-  coco_fpn)
+  coco_fpn_ms)
     TRAIN_IMDB="coco_2014_train+coco_2014_valminusminival"
     TEST_IMDB="coco_2014_minival"
     STEPSIZE=350000
