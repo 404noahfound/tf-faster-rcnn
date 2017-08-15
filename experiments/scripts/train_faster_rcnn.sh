@@ -9,10 +9,11 @@ GPU_ID=$1
 DATASET=$2
 NET=$3
 CFG=$4
+TAG=$5
 
 array=( $@ )
 len=${#array[@]}
-EXTRA_ARGS=${array[@]:4:$len}
+EXTRA_ARGS=${array[@]:5:$len}
 EXTRA_ARGS_SLUG=${EXTRA_ARGS// /_}
 
 case ${DATASET} in
@@ -75,8 +76,8 @@ exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
 set +x
-if [[ ! -z  ${EXTRA_ARGS_SLUG}  ]]; then
-    NET_FINAL=output/${NET}/${TRAIN_IMDB}/${EXTRA_ARGS_SLUG}/${NET}_faster_rcnn_iter_${ITERS}.ckpt
+if [[ ! -z  ${TAG}  ]]; then
+    NET_FINAL=output/${NET}/${TRAIN_IMDB}/${TAG}/${NET}_faster_rcnn_iter_${ITERS}.ckpt
 else
     NET_FINAL=output/${NET}/${TRAIN_IMDB}/default/${NET}_faster_rcnn_iter_${ITERS}.ckpt
 fi
