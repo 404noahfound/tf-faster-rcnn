@@ -14,12 +14,13 @@ class RPN_FPN(FeaturePyramidNetwork):
     self._output_name_list['predictions'] = \
       {"rpn_cls_score": -1, 'rpn_cls_score_reshape': -1, 'rpn_cls_prob': -1,
         'rpn_cls_pred': 0, 'rpn_bbox_pred': -1, 'rois': 0}
-    self._output_name_list['proposal_targets'] = \
-      {'rois': 0, 'labels': 0, 'bbox_targets': 0, 'bbox_inside_weights': 0,
-       'bbox_outside_weights': 0}
-    self._output_name_list['anchor_targets'] = \
-      {'rpn_labels': 0, 'rpn_bbox_targets': 0,
-       'rpn_bbox_inside_weights': 0, 'rpn_bbox_outside_weights': 0}
+    if self._is_training:
+      self._output_name_list['proposal_targets'] = \
+        {'rois': 0, 'labels': 0, 'bbox_targets': 0, 'bbox_inside_weights': 0,
+         'bbox_outside_weights': 0}
+      self._output_name_list['anchor_targets'] = \
+        {'rpn_labels': 0, 'rpn_bbox_targets': 0,
+         'rpn_bbox_inside_weights': 0, 'rpn_bbox_outside_weights': 0}
     for name in self._output_name_list:
       self._stage_outputs[name] = \
         dict((n, {}) for n in self._output_name_list[name])
