@@ -41,7 +41,7 @@ case ${DATASET} in
     TRAIN_IMDB="coco_2014_train+coco_2014_valminusminival"
     TEST_IMDB="coco_2014_minival"
     STEPSIZE=350000
-    ITERS=490000
+    ITERS=310000
     ANCHORS="[8]"
     RATIOS="[0.5,1,2]"
     ;;
