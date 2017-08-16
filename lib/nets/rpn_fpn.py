@@ -2,6 +2,8 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from nets.fpn import FeaturePyramidNetwork
 from layer_utils.proposal_layer import proposal_layer
+from model.config import cfg
+
 
 class RPN_FPN(FeaturePyramidNetwork):
 
