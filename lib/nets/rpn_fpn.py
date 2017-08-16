@@ -76,7 +76,7 @@ class RPN_FPN(FeaturePyramidNetwork):
 
     else:
       if cfg.TEST.MODE == 'nms':
-        rois, _ = base_net._proposal_layer(rpn_cls_prob, rpn_bbox_pred,
+        rois, _ = base_net._proposal_layer(rpn_cls_prob_reshape, rpn_bbox_pred,
           "rois")
       else:
         raise NotImplementedError
