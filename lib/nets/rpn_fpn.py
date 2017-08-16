@@ -119,10 +119,11 @@ class RPN_FPN(FeaturePyramidNetwork):
           self._stage_outputs[output_group],
           self._merge_outputs[output_group]
         )
-    base_net._anchor_targets = self._merge_outputs['anchor_targets']
-    base_net._proposal_targets = self._merge_outputs['proposal_targets']
+    if self._is_training:
+      base_net._anchor_targets = self._merge_outputs['anchor_targets']
+      base_net._proposal_targets = self._merge_outputs['proposal_targets']
+      base_net._score_summaries.update(base_net._proposal_targets)
     base_net._predictions = self._merge_outputs['predictions']
-    base_net._score_summaries.update(base_net._proposal_targets)
     base_net._score_summaries.update(base_net._predictions)
     return self._merge_outputs
 
