@@ -40,7 +40,7 @@ case ${DATASET} in
   coco_fpn)
     TRAIN_IMDB="coco_2014_train+coco_2014_valminusminival"
     TEST_IMDB="coco_2014_minival"
-    ITERS=420000
+    ITERS=490000
     ANCHORS="[8]"
     RATIOS="[0.5,1,2]"
     ;;
